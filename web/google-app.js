@@ -457,15 +457,24 @@ async function carregarGoogleMaps() {
   if (!config.googleMapsApiKey) throw new Error('A chave do Google Maps não está configurada.');
   await new Promise((resolve, reject) => {
     window.gm_authFailure = () => reject(new Error('A chave do Google Maps foi recusada. Confira as restrições de domínio.'));
+    const callback = '__atlasGoogleMapsReady';
+    window[callback] = () => {
+      delete window[callback];
+      resolve();
+    };
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(config.googleMapsApiKey)}&v=weekly&loading=async`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(config.googleMapsApiKey)}&v=weekly&loading=async&callback=${callback}`;
     script.async = true;
     script.defer = true;
-    script.onload = resolve;
-    script.onerror = () => reject(new Error('Não foi possível carregar o Google Maps.'));
+    script.onerror = () => {
+      delete window[callback];
+      reject(new Error('Não foi possível carregar o Google Maps.'));
+    };
     document.head.append(script);
   });
-  await google.maps.importLibrary('maps');
+  if (!window.google?.maps?.Map || !window.google?.maps?.Data) {
+    throw new Error('O Google Maps carregou sem os recursos necessários.');
+  }
 }
 
 async function carregar() {

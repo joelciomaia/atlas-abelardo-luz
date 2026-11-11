@@ -21,6 +21,9 @@ if ('static' in manifest) {
 if (/AIza[0-9A-Za-z_-]{20,}/.test(workerSource)) {
   throw new Error('Uma possível chave de API foi encontrada no pacote.');
 }
+if (workerSource.includes('google.maps.importLibrary')) {
+  throw new Error('O carregador ainda depende de importLibrary, que não está disponível em todos os navegadores atendidos.');
+}
 
 const moduleUrl = `${pathToFileURL(workerPath).href}?validate=${Date.now()}`;
 const worker = (await import(moduleUrl)).default;

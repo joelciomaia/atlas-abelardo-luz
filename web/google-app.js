@@ -178,8 +178,11 @@ function boundsDaFeature(feature) {
 }
 
 function paddingVisaoGeral() {
-  return window.matchMedia('(max-width: 900px)').matches
-    ? { top: 92, right: 28, bottom: 78, left: 28 }
+  if (window.matchMedia('(max-width: 900px)').matches) {
+    return { top: 92, right: 28, bottom: 78, left: 28 };
+  }
+  return document.body.classList.contains('explorer-collapsed')
+    ? { top: 112, right: 72, bottom: 66, left: 72 }
     : { top: 112, right: 72, bottom: 66, left: 370 };
 }
 
@@ -371,23 +374,63 @@ function renderizarMunicipio() {
     <section class="detail-section"><span class="detail-label">Fontes</span><h3>Limite oficial</h3><div class="official-row"><span>Geometria municipal</span><strong>IBGE</strong></div><div class="official-row"><span>Código</span><strong>4200101</strong></div></section>`;
 }
 
+function emTelaPequena() {
+  return window.matchMedia('(max-width: 900px)').matches;
+}
+
+function sincronizarControleExplorador() {
+  const aberto = emTelaPequena()
+    ? elementos.explorador.classList.contains('is-open')
+    : !elementos.explorador.classList.contains('is-collapsed');
+  const controle = $('#toggle-explorador');
+  controle.setAttribute('aria-expanded', String(aberto));
+  controle.setAttribute('aria-label', aberto ? 'Ocultar painel de camadas' : 'Exibir painel de camadas');
+  elementos.explorador.setAttribute('aria-hidden', String(!aberto));
+}
+
+function atualizarMapaAposPainel() {
+  window.setTimeout(() => {
+    if (mapa) google.maps.event.trigger(mapa, 'resize');
+  }, 260);
+}
+
 function fecharExplorador() {
-  elementos.explorador.classList.remove('is-open');
-  elementos.backdrop.hidden = true;
-  $('#toggle-explorador').setAttribute('aria-expanded', 'false');
+  if (emTelaPequena()) {
+    elementos.explorador.classList.remove('is-open');
+    elementos.backdrop.hidden = true;
+  } else {
+    elementos.explorador.classList.add('is-collapsed');
+    document.body.classList.add('explorer-collapsed');
+  }
+  sincronizarControleExplorador();
+  atualizarMapaAposPainel();
 }
 
 function abrirExplorador() {
-  elementos.explorador.classList.add('is-open');
-  elementos.backdrop.hidden = false;
-  $('#toggle-explorador').setAttribute('aria-expanded', 'true');
+  if (emTelaPequena()) {
+    elementos.explorador.classList.add('is-open');
+    elementos.backdrop.hidden = false;
+  } else {
+    elementos.explorador.classList.remove('is-collapsed');
+    document.body.classList.remove('explorer-collapsed');
+  }
+  sincronizarControleExplorador();
+  atualizarMapaAposPainel();
+}
+
+function alternarExplorador() {
+  const aberto = emTelaPequena()
+    ? elementos.explorador.classList.contains('is-open')
+    : !elementos.explorador.classList.contains('is-collapsed');
+  if (aberto) fecharExplorador();
+  else abrirExplorador();
 }
 
 function abrirPainel() {
   elementos.painel.classList.add('is-open');
   elementos.painel.setAttribute('aria-hidden', 'false');
   document.body.classList.add('has-selection');
-  fecharExplorador();
+  if (emTelaPequena()) fecharExplorador();
 }
 
 function selecionar(id, ajustarMapa = false) {
@@ -403,7 +446,12 @@ function selecionar(id, ajustarMapa = false) {
     const mobile = window.matchMedia('(max-width: 900px)').matches;
     mapa.fitBounds(boundsDaFeature(feature), mobile
       ? { top: 90, right: 28, bottom: 260, left: 28 }
-      : { top: 112, right: 430, bottom: 58, left: 360 });
+      : {
+          top: 112,
+          right: 430,
+          bottom: 58,
+          left: document.body.classList.contains('explorer-collapsed') ? 72 : 360,
+        });
   }
 }
 
@@ -584,7 +632,7 @@ $('#visao-geral').addEventListener('click', () => limparSelecao(true));
 $('#zoom-in').addEventListener('click', () => mapa?.setZoom((mapa.getZoom() || 10) + 1));
 $('#zoom-out').addEventListener('click', () => mapa?.setZoom((mapa.getZoom() || 10) - 1));
 $('#toggle-base').addEventListener('click', () => mapa && alternarBase());
-$('#toggle-explorador').addEventListener('click', abrirExplorador);
+$('#toggle-explorador').addEventListener('click', alternarExplorador);
 $('#fechar-explorador').addEventListener('click', fecharExplorador);
 elementos.backdrop.addEventListener('click', fecharExplorador);
 $('#abrir-fontes').addEventListener('click', () => elementos.fontes.showModal());
@@ -595,4 +643,16 @@ window.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && estado.selecionado) limparSelecao(false);
 });
 
+let telaPequenaAnterior = emTelaPequena();
+window.addEventListener('resize', () => {
+  const telaPequenaAtual = emTelaPequena();
+  if (telaPequenaAtual === telaPequenaAnterior) return;
+  telaPequenaAnterior = telaPequenaAtual;
+  elementos.explorador.classList.remove('is-open', 'is-collapsed');
+  document.body.classList.remove('explorer-collapsed');
+  elementos.backdrop.hidden = true;
+  sincronizarControleExplorador();
+});
+
+sincronizarControleExplorador();
 carregar();

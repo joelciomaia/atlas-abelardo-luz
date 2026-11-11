@@ -252,6 +252,10 @@ svg {
   flex-direction: column;
   padding: 22px 10px 12px;
   border-radius: var(--radius-lg);
+  transition:
+    transform 240ms cubic-bezier(.22,.8,.2,1),
+    opacity 180ms ease,
+    visibility 0s linear 0s;
 }
 
 .panel-heading {
@@ -1036,6 +1040,23 @@ body.has-selection .map-tools { right: 430px; }
   .detail-panel { width: 350px; }
   body.has-selection .map-tools { right: 390px; }
   .map-hint { left: calc(50% + 110px); }
+}
+
+@media (min-width: 901px) {
+  .explorer.is-collapsed {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(calc(-100% - 48px));
+    transition:
+      transform 240ms cubic-bezier(.22,.8,.2,1),
+      opacity 180ms ease,
+      visibility 0s linear 240ms;
+  }
+
+  body.explorer-collapsed .map-hint {
+    left: 50%;
+  }
 }
 
 @media (max-width: 900px) {

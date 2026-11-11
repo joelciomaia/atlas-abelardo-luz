@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Atlas interativo escolar dos assentamentos de Abelardo Luz, Santa Catarina."
+    />
+    <meta name="theme-color" content="#173c32" />
+    <title>Atlas dos Assentamentos de Abelardo Luz</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIINfQ3ynhlyGQHFDsJEhY5GHRXwMyF9r0M="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#explorador">Ir para a lista de assentamentos</a>
+
+    <main class="atlas-shell">
+      <div id="map" aria-label="Mapa interativo dos assentamentos de Abelardo Luz"></div>
+      <div class="map-shade" aria-hidden="true"></div>
+
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div>
+            <p class="eyebrow">Inventário da realidade</p>
+            <h1>Atlas dos Assentamentos</h1>
+            <p class="brand-location">Abelardo Luz · Santa Catarina</p>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-button mobile-only" id="toggle-explorador" type="button" aria-label="Abrir lista de assentamentos" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+          </button>
+          <button class="text-button" id="toggle-base" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4-8 4-8-4 8-4Z" /><path d="m4 12 8 4 8-4M4 17l8 4 8-4" /></svg>
+            <span id="base-label">Ver mapa</span>
+          </button>
+          <button class="icon-button" id="abrir-fontes" type="button" aria-label="Abrir informações e fontes">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v6M12 7.5v.1" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <aside class="explorer glass-panel" id="explorador" aria-label="Explorar assentamentos">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Navegue pelo território</p>
+            <h2>Assentamentos</h2>
+          </div>
+          <button class="icon-button close-drawer mobile-only" id="fechar-explorador" type="button" aria-label="Fechar lista">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </div>
+
+        <label class="search-box" for="busca">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m16 16 4 4" /></svg>
+          <input id="busca" type="search" placeholder="Buscar assentamento…" autocomplete="off" />
+        </label>
+
+        <div class="explorer-summary">
+          <span><strong id="total-assentamentos">—</strong> territórios</span>
+          <span class="summary-dot"></span>
+          <span><strong id="total-respostas">—</strong> relatos</span>
+        </div>
+
+        <div class="territory-list" id="lista-assentamentos" aria-live="polite">
+          <div class="loading-list">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="detail-panel glass-panel" id="painel-detalhes" aria-label="Detalhes do assentamento" aria-hidden="true">
+        <button class="detail-close" id="fechar-detalhes" type="button" aria-label="Fechar detalhes">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+        <div id="conteudo-detalhes"></div>
+      </section>
+
+      <div class="map-tools" aria-label="Controles do mapa">
+        <button id="zoom-in" type="button" aria-label="Aproximar mapa">+</button>
+        <button id="zoom-out" type="button" aria-label="Afastar mapa">−</button>
+        <button id="visao-geral" type="button" aria-label="Voltar à visão geral">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10V4h6M20 14v6h-6M4 4l6 6M20 20l-6-6" /></svg>
+        </button>
+      </div>
+
+      <div class="map-hint" id="map-hint">
+        <span class="hint-cursor" aria-hidden="true"></span>
+        Passe o mouse para explorar · clique para fixar
+      </div>
+
+      <div class="legend" aria-label="Legenda do mapa">
+        <span><i class="legend-swatch territory"></i>Assentamentos</span>
+        <span><i class="legend-swatch selected"></i>Selecionado</span>
+        <span><i class="legend-line"></i>Limite municipal</span>
+      </div>
+
+      <div class="status-pill" id="status" role="status" aria-live="polite">
+        <span class="pulse"></span> Preparando o atlas…
+      </div>
+
+      <div class="drawer-backdrop" id="backdrop" hidden></div>
+    </main>
+
+    <dialog class="sources-dialog" id="fontes-dialog">
+      <form method="dialog" class="dialog-card">
+        <button class="detail-close" value="close" aria-label="Fechar informações">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+        <p class="eyebrow">Sobre o projeto</p>
+        <h2>Um território contado em camadas</h2>
+        <p>
+          Este atlas reúne limites oficiais e uma pesquisa escolar sobre a realidade vivida nas
+          comunidades. Os relatos são amostrais, anônimos e não representam um censo populacional.
+        </p>
+        <div class="source-block">
+          <h3>Fontes cartográficas</h3>
+          <p><strong>Assentamentos:</strong> INCRA, por meio do serviço cartográfico do IBAMA.</p>
+          <p><strong>Limite municipal:</strong> IBGE, código municipal 4200101.</p>
+        </div>
+        <div class="source-block">
+          <h3>Pesquisa escolar</h3>
+          <p>
+            Questionário “Inventário da Realidade”, aplicado em outubro de 2026. Foram consideradas
+            23 respostas; nenhuma informação individual é exibida.
+          </p>
+        </div>
+        <p class="source-note">
+          Áreas, famílias e códigos SIPRA são apresentados conforme os registros oficiais disponíveis.
+        </p>
+      </form>
+    </dialog>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

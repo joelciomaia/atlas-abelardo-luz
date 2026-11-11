@@ -1,0 +1,248 @@
+[
+  {
+    "numero_campo": 1,
+    "identificador": "campo_01",
+    "tipo": "identificacao",
+    "pergunta_original": "Carimbo de data/hora"
+  },
+  {
+    "numero_campo": 2,
+    "identificador": "campo_02",
+    "tipo": "identificacao",
+    "pergunta_original": "Nome do estudante"
+  },
+  {
+    "numero_campo": 3,
+    "identificador": "campo_03",
+    "tipo": "identificacao",
+    "pergunta_original": "Turma"
+  },
+  {
+    "numero_campo": 4,
+    "identificador": "campo_04",
+    "tipo": "identificacao",
+    "pergunta_original": "Localidade/comunidade onde mora"
+  },
+  {
+    "numero_campo": 5,
+    "identificador": "campo_05",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Como é a vegetação natural da área? Quais plantas nativas/espontâneas estão presentes?"
+  },
+  {
+    "numero_campo": 6,
+    "identificador": "campo_06",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Há reservas na área? Qual o tipo?"
+  },
+  {
+    "numero_campo": 7,
+    "identificador": "campo_07",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Existem animais nativos e domésticos onde vocês moram? Se sim, quais?"
+  },
+  {
+    "numero_campo": 8,
+    "identificador": "campo_08",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Há fontes de água no entorno? Quais? Existe algum riacho, rio, lagoa, açude ou vertente de água no local ou próximo?"
+  },
+  {
+    "numero_campo": 9,
+    "identificador": "campo_09",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Há alguma barragem em área próxima? Como é a qualidade da água?"
+  },
+  {
+    "numero_campo": 10,
+    "identificador": "campo_10",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Há pessoas com algum tipo de deficiência física ou mental na comunidade?"
+  },
+  {
+    "numero_campo": 11,
+    "identificador": "campo_11",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Quais tipos de deficiência estão presentes?"
+  },
+  {
+    "numero_campo": 12,
+    "identificador": "campo_12",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Que tipo de atendimento utilizam?"
+  },
+  {
+    "numero_campo": 13,
+    "identificador": "campo_13",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Quais as principais características econômicas, sociais, culturais das famílias? Como se dão as relações de gênero e entre gerações? Como se trata a questão da orientação sexual e da identidade de gênero em cada família na comunidade? Que relações existem entre as famílias?"
+  },
+  {
+    "numero_campo": 14,
+    "identificador": "campo_14",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Como é o acesso a luz elétrica?"
+  },
+  {
+    "numero_campo": 15,
+    "identificador": "campo_15",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Quais meios de comunicação você utiliza?"
+  },
+  {
+    "numero_campo": 16,
+    "identificador": "campo_16",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Em média, quanto tempo por dia você utiliza a internet?"
+  },
+  {
+    "numero_campo": 17,
+    "identificador": "campo_17",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Que atividades de lazer são realizadas coletivamente ou por determinados grupos e quando acontecem?"
+  },
+  {
+    "numero_campo": 18,
+    "identificador": "campo_18",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Há festas tradicionais que se realizam na comunidade, que datas costumam ser celebradas mais fortemente pelas famílias?"
+  },
+  {
+    "numero_campo": 19,
+    "identificador": "campo_19",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Há museus ou outros centros de memória no local ou que não estejam muito distantes da escola? Há bibliotecas próximas?"
+  },
+  {
+    "numero_campo": 20,
+    "identificador": "campo_20",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "O que se faz com o lixo (restos de alimentos, embalagens, latas, garrafas...) nas casas e no conjunto da comunidade?"
+  },
+  {
+    "numero_campo": 21,
+    "identificador": "campo_21",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Quais são as fontes de renda da família? Listar as rendas, indicando o que e quanto:"
+  },
+  {
+    "numero_campo": 22,
+    "identificador": "campo_22",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Quais as formas de acesso a terra: própria de cada família ou pessoa, posse, arrendamento, comodato, uso comunitário; área total ocupada (para produção, moradia e outros usos comunitários)."
+  },
+  {
+    "numero_campo": 23,
+    "identificador": "campo_23",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Que animais são criados (de que raças) e para quais finalidades? Quais as formas de criação e qual o uso de tecnologias?"
+  },
+  {
+    "numero_campo": 24,
+    "identificador": "campo_24",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Quais os cultivos existentes: que plantas são cultivadas (espécies e variedades) e para que finalidades?"
+  },
+  {
+    "numero_campo": 25,
+    "identificador": "campo_25",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Há consórcios de plantas e rotação de culturas? Qual a origem das sementes utilizadas? Quais as formas de cultivo e que tecnologias são utilizadas? São usados fertilizantes sintéticos e agrotóxicos?"
+  },
+  {
+    "numero_campo": 26,
+    "identificador": "campo_26",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "São usados adubos ou outros produtos orgânicos?"
+  },
+  {
+    "numero_campo": 27,
+    "identificador": "campo_27",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Existe processamento de produtos? Quais? Por iniciativa de cada família para seu próprio uso ou há atividades comunitárias simples para consumo das famílias ou para venda em feiras etc."
+  },
+  {
+    "numero_campo": 28,
+    "identificador": "campo_28",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Há outras indústrias no local ou no entorno ou na região? Quais as principais e quem são seus proprietários? De onde são seus trabalhadores? Há membros desta comunidade trabalhando nelas? Em que regime de trabalho? (Por exemplo Aurora)"
+  },
+  {
+    "numero_campo": 29,
+    "identificador": "campo_29",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Qual a forma predominante de organização do trabalho: familiar, trabalho coletivo (grupos, associações, cooperativas...), outras formas? Existe trabalho assalariado para atividades produtivas internas à comunidade?"
+  },
+  {
+    "numero_campo": 30,
+    "identificador": "campo_30",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Existem trabalhadores assalariados de empresas externas próximas? Como se dá a participação das mulheres, dos jovens e das crianças no conjunto do trabalho, nos processos de decisão e de execução?"
+  },
+  {
+    "numero_campo": 31,
+    "identificador": "campo_31",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Que organizações ou entidades ou instituições estão presentes e/ou têm influência significativa sobre as relações e práticas da comunidade (movimentos sociais, sindicatos, igrejas, grupos culturais, órgãos públicos, cooperativas, entidades do agronegócio...)? E como essas influências ocorrem?"
+  },
+  {
+    "numero_campo": 32,
+    "identificador": "campo_32",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Quais são as condições de infraestrutura da escola: salas de aula, biblioteca, equipamentos de laboratório de ciências, acesso à luz elétrica, à água, a saneamento, à internet, a local para prática de esportes, e outros."
+  },
+  {
+    "numero_campo": 33,
+    "identificador": "campo_33",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Como se dá a gestão da escola: há processos em que os estudantes estão ou poderiam estar envolvidos? Há alguma experiência de auto-organização dos estudantes? Como funciona?"
+  },
+  {
+    "numero_campo": 34,
+    "identificador": "campo_34",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Como costumam acontecer atividades realizadas pelos/as estudantes fora da escola? Quais e em que tempo?"
+  },
+  {
+    "numero_campo": 35,
+    "identificador": "campo_35",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Quais são os alimentos utilizados na merenda escolar e qual sua origem? Observar formas de preparo dos alimentos na escola."
+  },
+  {
+    "numero_campo": 36,
+    "identificador": "campo_36",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Qual a sua participação nas atividades produtivas familiares ou comunitárias (quais atividades e em quanto tempo diário médio)?"
+  },
+  {
+    "numero_campo": 37,
+    "identificador": "campo_37",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Participação em trabalhos domésticos (quais atividades em quanto tempo diário médio);"
+  },
+  {
+    "numero_campo": 38,
+    "identificador": "campo_38",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Participação em jogos e brincadeiras (quais atividades, individuais e coletivas em que tempo diário ou semanal);"
+  },
+  {
+    "numero_campo": 39,
+    "identificador": "campo_39",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Que tipos de leitura você realiza?"
+  },
+  {
+    "numero_campo": 40,
+    "identificador": "campo_40",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Participação em grupos ou organizações entre si ou com os adultos (quais em que tempo);"
+  },
+  {
+    "numero_campo": 41,
+    "identificador": "campo_41",
+    "tipo": "pergunta_temática",
+    "pergunta_original": "Participação em atividades culturais internas ou externas à comunidade (quais, em que tempo)"
+  }
+]

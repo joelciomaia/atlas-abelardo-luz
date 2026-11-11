@@ -1,0 +1,671 @@
+[
+  {
+    "id_localidade": "indianopolis",
+    "localidade_informada_normalizada": "Indianópolis",
+    "tipo_vinculo": "nome_corresponde_assentamento_catalogado",
+    "id_assentamento": "indianopolis",
+    "quantidade_registros_questionario": 6,
+    "series_escolares": {
+      "1º série": 3,
+      "2º série": 3
+    },
+    "internet_diaria": {
+      "1 a 2 horas": 1,
+      "2 a 4 horas": 2,
+      "Mais de 4 horas": 3
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 6,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 4,
+          "erva_mate": 2,
+          "arvores_frutiferas": 1,
+          "eucalipto": 0
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 6,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 2,
+          "acudes": 2,
+          "nascentes_ou_vertentes": 0,
+          "pocos": 2,
+          "sangas": 1,
+          "lagoas": 0
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 6,
+        "mencoes_por_estudante": {
+          "milho": 5,
+          "soja": 1,
+          "fumo_ou_tabaco": 0,
+          "feijao": 1,
+          "pastagem": 1,
+          "hortalicas": 0
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 6,
+        "mencoes_por_estudante": {
+          "bovinos": 5,
+          "suinos": 1,
+          "aves": 2,
+          "ovinos": 1
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 6,
+        "mencoes_por_estudante": {
+          "queima": 4,
+          "enterro_ou_fossa": 1,
+          "reciclagem": 0,
+          "levado_a_cidade": 1,
+          "reaproveitamento_organico": 2
+        }
+      }
+    },
+    "observacoes": "Indicadores representam somente respostas dos estudantes pesquisados; não descrevem a população total nem comprovam localização física dos elementos."
+  },
+  {
+    "id_localidade": "novo-horizonte",
+    "localidade_informada_normalizada": "Novo Horizonte",
+    "tipo_vinculo": "nome_corresponde_assentamento_catalogado",
+    "id_assentamento": "novo-horizonte",
+    "quantidade_registros_questionario": 5,
+    "series_escolares": {
+      "2º série": 2,
+      "3º série": 3
+    },
+    "internet_diaria": {
+      "1 a 2 horas": 2,
+      "2 a 4 horas": 2,
+      "Mais de 4 horas": 1
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 5,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 3,
+          "erva_mate": 1,
+          "arvores_frutiferas": 0,
+          "eucalipto": 0
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 4,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 1,
+          "acudes": 1,
+          "nascentes_ou_vertentes": 1,
+          "pocos": 1,
+          "sangas": 1,
+          "lagoas": 0
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 4,
+        "mencoes_por_estudante": {
+          "milho": 1,
+          "soja": 1,
+          "fumo_ou_tabaco": 0,
+          "feijao": 0,
+          "pastagem": 1,
+          "hortalicas": 1
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 3,
+        "mencoes_por_estudante": {
+          "bovinos": 2,
+          "suinos": 1,
+          "aves": 1,
+          "ovinos": 0
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 3,
+        "mencoes_por_estudante": {
+          "queima": 2,
+          "enterro_ou_fossa": 1,
+          "reciclagem": 0,
+          "levado_a_cidade": 0,
+          "reaproveitamento_organico": 1
+        }
+      }
+    },
+    "observacoes": "Indicadores representam somente respostas dos estudantes pesquisados; não descrevem a população total nem comprovam localização física dos elementos."
+  },
+  {
+    "id_localidade": "jose-maria",
+    "localidade_informada_normalizada": "José Maria",
+    "tipo_vinculo": "nome_corresponde_assentamento_catalogado",
+    "id_assentamento": "jose-maria",
+    "quantidade_registros_questionario": 3,
+    "series_escolares": {
+      "1º série": 2,
+      "3º série": 1
+    },
+    "internet_diaria": {
+      "Mais de 4 horas": 3
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 2,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 1,
+          "erva_mate": 0,
+          "arvores_frutiferas": 1,
+          "eucalipto": 0
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 3,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 1,
+          "acudes": 3,
+          "nascentes_ou_vertentes": 2,
+          "pocos": 0,
+          "sangas": 1,
+          "lagoas": 0
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 2,
+        "mencoes_por_estudante": {
+          "milho": 2,
+          "soja": 1,
+          "fumo_ou_tabaco": 2,
+          "feijao": 0,
+          "pastagem": 0,
+          "hortalicas": 0
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 2,
+        "mencoes_por_estudante": {
+          "bovinos": 2,
+          "suinos": 1,
+          "aves": 1,
+          "ovinos": 0
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 3,
+        "mencoes_por_estudante": {
+          "queima": 2,
+          "enterro_ou_fossa": 1,
+          "reciclagem": 0,
+          "levado_a_cidade": 0,
+          "reaproveitamento_organico": 1
+        }
+      }
+    },
+    "observacoes": "Indicadores representam somente respostas dos estudantes pesquisados; não descrevem a população total nem comprovam localização física dos elementos."
+  },
+  {
+    "id_localidade": "13-de-novembro",
+    "localidade_informada_normalizada": "13 de Novembro",
+    "tipo_vinculo": "nome_corresponde_assentamento_catalogado",
+    "id_assentamento": "13-de-novembro",
+    "quantidade_registros_questionario": 2,
+    "series_escolares": {
+      "3º série": 2
+    },
+    "internet_diaria": {
+      "1 a 2 horas": 1,
+      "2 a 4 horas": 1
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 2,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 0,
+          "erva_mate": 0,
+          "arvores_frutiferas": 0,
+          "eucalipto": 1
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 2,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 0,
+          "acudes": 2,
+          "nascentes_ou_vertentes": 1,
+          "pocos": 0,
+          "sangas": 0,
+          "lagoas": 0
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 2,
+        "mencoes_por_estudante": {
+          "milho": 2,
+          "soja": 0,
+          "fumo_ou_tabaco": 0,
+          "feijao": 0,
+          "pastagem": 0,
+          "hortalicas": 1
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 2,
+        "mencoes_por_estudante": {
+          "bovinos": 2,
+          "suinos": 0,
+          "aves": 0,
+          "ovinos": 0
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 2,
+        "mencoes_por_estudante": {
+          "queima": 0,
+          "enterro_ou_fossa": 0,
+          "reciclagem": 0,
+          "levado_a_cidade": 1,
+          "reaproveitamento_organico": 0
+        }
+      }
+    },
+    "observacoes": "Indicadores representam somente respostas dos estudantes pesquisados; não descrevem a população total nem comprovam localização física dos elementos."
+  },
+  {
+    "id_localidade": "roseli-nunes",
+    "localidade_informada_normalizada": "Roseli Nunes",
+    "tipo_vinculo": "nome_corresponde_assentamento_catalogado",
+    "id_assentamento": "roseli-nunes",
+    "quantidade_registros_questionario": 2,
+    "series_escolares": {
+      "3º série": 2
+    },
+    "internet_diaria": {
+      "2 a 4 horas": 1,
+      "Mais de 4 horas": 1
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 1,
+          "erva_mate": 0,
+          "arvores_frutiferas": 1,
+          "eucalipto": 0
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 1,
+          "acudes": 1,
+          "nascentes_ou_vertentes": 0,
+          "pocos": 1,
+          "sangas": 0,
+          "lagoas": 0
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "milho": 1,
+          "soja": 1,
+          "fumo_ou_tabaco": 1,
+          "feijao": 0,
+          "pastagem": 0,
+          "hortalicas": 0
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "bovinos": 1,
+          "suinos": 1,
+          "aves": 0,
+          "ovinos": 0
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "queima": 0,
+          "enterro_ou_fossa": 1,
+          "reciclagem": 0,
+          "levado_a_cidade": 0,
+          "reaproveitamento_organico": 0
+        }
+      }
+    },
+    "observacoes": "Indicadores representam somente respostas dos estudantes pesquisados; não descrevem a população total nem comprovam localização física dos elementos."
+  },
+  {
+    "id_localidade": "fazenda-da-luz",
+    "localidade_informada_normalizada": "Fazenda da Luz",
+    "tipo_vinculo": "localidade_nao_vinculada_a_assentamento_oficial",
+    "id_assentamento": null,
+    "quantidade_registros_questionario": 1,
+    "series_escolares": {
+      "2º série": 1
+    },
+    "internet_diaria": {
+      "Mais de 4 horas": 1
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 1,
+          "erva_mate": 0,
+          "arvores_frutiferas": 0,
+          "eucalipto": 0
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 1,
+          "acudes": 1,
+          "nascentes_ou_vertentes": 1,
+          "pocos": 0,
+          "sangas": 0,
+          "lagoas": 1
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "milho": 0,
+          "soja": 0,
+          "fumo_ou_tabaco": 0,
+          "feijao": 0,
+          "pastagem": 0,
+          "hortalicas": 0
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "bovinos": 0,
+          "suinos": 1,
+          "aves": 0,
+          "ovinos": 0
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "queima": 0,
+          "enterro_ou_fossa": 0,
+          "reciclagem": 0,
+          "levado_a_cidade": 0,
+          "reaproveitamento_organico": 0
+        }
+      }
+    },
+    "observacoes": "A localidade digitada não corresponde claramente a um assentamento do catálogo; conferir antes de exibir em mapa."
+  },
+  {
+    "id_localidade": "flor-da-serra",
+    "localidade_informada_normalizada": "Flor da Serra",
+    "tipo_vinculo": "localidade_nao_vinculada_a_assentamento_oficial",
+    "id_assentamento": null,
+    "quantidade_registros_questionario": 1,
+    "series_escolares": {
+      "1º série": 1
+    },
+    "internet_diaria": {
+      "2 a 4 horas": 1
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 1,
+          "erva_mate": 0,
+          "arvores_frutiferas": 1,
+          "eucalipto": 0
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 0,
+          "acudes": 0,
+          "nascentes_ou_vertentes": 0,
+          "pocos": 0,
+          "sangas": 0,
+          "lagoas": 0
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "milho": 1,
+          "soja": 0,
+          "fumo_ou_tabaco": 0,
+          "feijao": 0,
+          "pastagem": 0,
+          "hortalicas": 0
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "bovinos": 1,
+          "suinos": 1,
+          "aves": 0,
+          "ovinos": 1
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "queima": 0,
+          "enterro_ou_fossa": 0,
+          "reciclagem": 0,
+          "levado_a_cidade": 1,
+          "reaproveitamento_organico": 1
+        }
+      }
+    },
+    "observacoes": "A localidade digitada não corresponde claramente a um assentamento do catálogo; conferir antes de exibir em mapa."
+  },
+  {
+    "id_localidade": "localidade-a-confirmar",
+    "localidade_informada_normalizada": "Localidade não identificada",
+    "tipo_vinculo": "localidade_nao_vinculada_a_assentamento_oficial",
+    "id_assentamento": null,
+    "quantidade_registros_questionario": 1,
+    "series_escolares": {
+      "3º série": 1
+    },
+    "internet_diaria": {
+      "Não utilizo": 1
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 0,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 0,
+          "erva_mate": 0,
+          "arvores_frutiferas": 0,
+          "eucalipto": 0
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 0,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 0,
+          "acudes": 0,
+          "nascentes_ou_vertentes": 0,
+          "pocos": 0,
+          "sangas": 0,
+          "lagoas": 0
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 0,
+        "mencoes_por_estudante": {
+          "milho": 0,
+          "soja": 0,
+          "fumo_ou_tabaco": 0,
+          "feijao": 0,
+          "pastagem": 0,
+          "hortalicas": 0
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 0,
+        "mencoes_por_estudante": {
+          "bovinos": 0,
+          "suinos": 0,
+          "aves": 0,
+          "ovinos": 0
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 0,
+        "mencoes_por_estudante": {
+          "queima": 0,
+          "enterro_ou_fossa": 0,
+          "reciclagem": 0,
+          "levado_a_cidade": 0,
+          "reaproveitamento_organico": 0
+        }
+      }
+    },
+    "observacoes": "Um registro digitou um nome próprio no campo localidade; registro anonimizado e pendente de revisão."
+  },
+  {
+    "id_localidade": "santa-luzia",
+    "localidade_informada_normalizada": "Santa Luzia",
+    "tipo_vinculo": "localidade_nao_vinculada_a_assentamento_oficial",
+    "id_assentamento": null,
+    "quantidade_registros_questionario": 1,
+    "series_escolares": {
+      "3º série": 1
+    },
+    "internet_diaria": {
+      "Mais de 4 horas": 1
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 1,
+          "erva_mate": 0,
+          "arvores_frutiferas": 0,
+          "eucalipto": 0
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 0,
+          "acudes": 0,
+          "nascentes_ou_vertentes": 1,
+          "pocos": 0,
+          "sangas": 0,
+          "lagoas": 0
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "milho": 1,
+          "soja": 0,
+          "fumo_ou_tabaco": 0,
+          "feijao": 0,
+          "pastagem": 0,
+          "hortalicas": 0
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "bovinos": 1,
+          "suinos": 0,
+          "aves": 1,
+          "ovinos": 0
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "queima": 1,
+          "enterro_ou_fossa": 0,
+          "reciclagem": 0,
+          "levado_a_cidade": 0,
+          "reaproveitamento_organico": 0
+        }
+      }
+    },
+    "observacoes": "A localidade digitada não corresponde claramente a um assentamento do catálogo; conferir antes de exibir em mapa."
+  },
+  {
+    "id_localidade": "serra-alta",
+    "localidade_informada_normalizada": "Serra Alta",
+    "tipo_vinculo": "localidade_nao_vinculada_a_assentamento_oficial",
+    "id_assentamento": null,
+    "quantidade_registros_questionario": 1,
+    "series_escolares": {
+      "3º série": 1
+    },
+    "internet_diaria": {
+      "2 a 4 horas": 1
+    },
+    "indicadores": {
+      "vegetacao_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "araucaria_ou_pinheiro": 1,
+          "erva_mate": 0,
+          "arvores_frutiferas": 0,
+          "eucalipto": 0
+        }
+      },
+      "fontes_agua_relatadas": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "rios_ou_riachos": 0,
+          "acudes": 1,
+          "nascentes_ou_vertentes": 1,
+          "pocos": 0,
+          "sangas": 1,
+          "lagoas": 0
+        }
+      },
+      "cultivos_relatados": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "milho": 0,
+          "soja": 1,
+          "fumo_ou_tabaco": 1,
+          "feijao": 0,
+          "pastagem": 0,
+          "hortalicas": 0
+        }
+      },
+      "criacao_animais_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "bovinos": 1,
+          "suinos": 1,
+          "aves": 0,
+          "ovinos": 0
+        }
+      },
+      "destinacao_residuos_relatada": {
+        "respostas_a_pergunta": 1,
+        "mencoes_por_estudante": {
+          "queima": 0,
+          "enterro_ou_fossa": 0,
+          "reciclagem": 1,
+          "levado_a_cidade": 0,
+          "reaproveitamento_organico": 0
+        }
+      }
+    },
+    "observacoes": "A localidade digitada não corresponde claramente a um assentamento do catálogo; conferir antes de exibir em mapa."
+  }
+]

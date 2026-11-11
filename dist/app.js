@@ -13,7 +13,8 @@ const estado = {
   camadasPorId: new Map(),
   selecionado: null,
   limiteBounds: null,
-  baseAtual: 'satelite',
+  baseAtual: 'mapa',
+  errosSatelite: 0,
 };
 
 const nomesIndicadores = {
@@ -75,6 +76,11 @@ const mapa = L.map('map', {
   preferCanvas: false,
 }).setView([-26.56, -52.33], 10);
 
+mapa.createPane('assentamentosPane');
+mapa.getPane('assentamentosPane').style.zIndex = '430';
+mapa.createPane('limitePane');
+mapa.getPane('limitePane').style.zIndex = '440';
+
 const bases = {
   satelite: L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -83,13 +89,14 @@ const bases = {
       attribution: 'Imagens © Esri e colaboradores',
     },
   ),
-  mapa: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  mapa: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap contributors',
+    className: 'mapa-base-ruas',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }),
 };
 
-bases.satelite.addTo(mapa);
+bases.mapa.addTo(mapa);
 
 const normalizar = (valor = '') =>
   String(valor)
@@ -134,31 +141,32 @@ function itemDaFeature(feature) {
 
 function estiloPadrao() {
   return {
-    color: '#d9f4a6',
-    weight: 1.4,
-    opacity: 0.86,
-    fillColor: '#8fc46a',
-    fillOpacity: 0.29,
+    color: '#fff8dc',
+    weight: 2.2,
+    opacity: 0.98,
+    fillColor: '#76b947',
+    fillOpacity: 0.48,
+    className: 'assentamento-shape',
   };
 }
 
 function estiloHover() {
   return {
     color: '#fff0cf',
-    weight: 3,
+    weight: 4,
     opacity: 1,
     fillColor: '#f2b35e',
-    fillOpacity: 0.56,
+    fillOpacity: 0.72,
   };
 }
 
 function estiloSelecionado() {
   return {
     color: '#fff5e9',
-    weight: 4,
+    weight: 4.5,
     opacity: 1,
     fillColor: '#ef8354',
-    fillOpacity: 0.68,
+    fillOpacity: 0.78,
   };
 }
 
@@ -185,6 +193,7 @@ function configurarAcessibilidadeCamada(layer, item) {
 
 function adicionarGeometrias(geojson) {
   const camada = L.geoJSON(geojson, {
+    pane: 'assentamentosPane',
     style: estiloPadrao,
     onEachFeature(feature, layer) {
       const item = itemDaFeature(feature);
@@ -382,6 +391,13 @@ function selecionar(id, ajustarMapa = false) {
   }
 }
 
+function paddingVisaoGeral() {
+  const mobile = window.matchMedia('(max-width: 900px)').matches;
+  return mobile
+    ? { paddingTopLeft: [28, 94], paddingBottomRight: [28, 82] }
+    : { paddingTopLeft: [375, 115], paddingBottomRight: [72, 60] };
+}
+
 function limparSelecao(voltar = false) {
   if (estado.selecionado && estado.camadasPorId.has(estado.selecionado)) {
     estado.camadasPorId.get(estado.selecionado).setStyle(estiloPadrao());
@@ -392,8 +408,29 @@ function limparSelecao(voltar = false) {
   document.body.classList.remove('has-selection');
   renderizarLista(elementos.busca.value);
   if (voltar && estado.limiteBounds) {
-    mapa.fitBounds(estado.limiteBounds, { padding: [45, 45], animate: true });
+    mapa.fitBounds(estado.limiteBounds, { ...paddingVisaoGeral(), animate: true });
   }
+}
+
+function atualizarBotaoBase() {
+  $('#base-label').textContent = estado.baseAtual === 'mapa' ? 'Ver satélite' : 'Ver mapa';
+  $('#base-attribution').textContent = estado.baseAtual === 'mapa' ? 'Base © OpenStreetMap' : 'Imagens © Esri';
+  $('#base-attribution').href = estado.baseAtual === 'mapa'
+    ? 'https://www.openstreetmap.org/copyright'
+    : 'https://www.esri.com/';
+}
+
+function mostrarAviso(mensagem) {
+  elementos.status.classList.remove('is-ready');
+  elementos.status.innerHTML = `<span class="pulse"></span> ${escapar(mensagem)}`;
+  setTimeout(() => elementos.status.classList.add('is-ready'), 3200);
+}
+
+function voltarAoMapaBase() {
+  if (mapa.hasLayer(bases.satelite)) mapa.removeLayer(bases.satelite);
+  if (!mapa.hasLayer(bases.mapa)) bases.mapa.addTo(mapa).bringToBack();
+  estado.baseAtual = 'mapa';
+  atualizarBotaoBase();
 }
 
 function alternarBase() {
@@ -401,7 +438,8 @@ function alternarBase() {
   mapa.removeLayer(bases[estado.baseAtual]);
   bases[proxima].addTo(mapa).bringToBack();
   estado.baseAtual = proxima;
-  $('#base-label').textContent = proxima === 'satelite' ? 'Ver mapa' : 'Ver satélite';
+  if (proxima === 'satelite') estado.errosSatelite = 0;
+  atualizarBotaoBase();
 }
 
 async function carregar() {
@@ -423,13 +461,14 @@ async function carregar() {
     );
 
     const limiteLayer = L.geoJSON(limite, {
+      pane: 'limitePane',
       style: {
-        color: '#f7f3e9',
-        weight: 4,
+        color: '#ffffff',
+        weight: 5,
         opacity: 0.95,
         dashArray: '9 7',
         fillColor: '#0f392f',
-        fillOpacity: 0.03,
+        fillOpacity: 0,
         className: 'limite-municipal',
       },
       interactive: false,
@@ -438,7 +477,7 @@ async function carregar() {
     estado.limiteBounds = limiteLayer.getBounds();
     adicionarGeometrias(geometrias);
     limiteLayer.bringToFront();
-    mapa.fitBounds(estado.limiteBounds, { padding: [45, 45], animate: false });
+    mapa.fitBounds(estado.limiteBounds, { ...paddingVisaoGeral(), animate: false });
 
     elementos.totalAssentamentos.textContent = catalogo.length;
     elementos.totalRespostas.textContent = localidades.reduce(
@@ -466,6 +505,14 @@ $('#fechar-explorador').addEventListener('click', fecharExplorador);
 elementos.backdrop.addEventListener('click', fecharExplorador);
 $('#abrir-fontes').addEventListener('click', () => elementos.fontes.showModal());
 mapa.on('click', () => limparSelecao(false));
+
+bases.satelite.on('tileerror', () => {
+  estado.errosSatelite += 1;
+  if (estado.baseAtual === 'satelite' && estado.errosSatelite >= 3) {
+    voltarAoMapaBase();
+    mostrarAviso('Satélite indisponível; voltamos ao mapa convencional');
+  }
+});
 
 window.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && estado.selecionado) limparSelecao(false);

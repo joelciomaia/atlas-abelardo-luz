@@ -24,6 +24,8 @@ let assentamentosLayer;
 let municipioLayer;
 let mascaraMunicipal;
 let infoWindow;
+let falhaAutenticacaoGoogle = null;
+let mapaBaseCarregado = false;
 
 const nomesIndicadores = {
   araucaria_ou_pinheiro: 'Araucária ou pinheiro',
@@ -450,15 +452,64 @@ function mostrarStatus(mensagem, erro = false) {
   if (!erro) setTimeout(() => elementos.status.classList.add('is-ready'), 1100);
 }
 
+function mostrarFalhaMapa(titulo, mensagem) {
+  mostrarStatus(titulo, true);
+  console.error(`[Atlas] ${titulo}: ${mensagem}`);
+  let cartao = document.querySelector('.map-error-card');
+  if (!cartao) {
+    cartao = document.createElement('div');
+    cartao.className = 'map-error-card';
+    cartao.setAttribute('role', 'alert');
+    document.querySelector('.atlas-shell').append(cartao);
+  }
+  cartao.innerHTML = `<strong>${escapar(titulo)}</strong><span>${escapar(mensagem)}</span>`;
+}
+
+function monitorarMapaBase() {
+  google.maps.event.addListenerOnce(mapa, 'tilesloaded', () => {
+    mapaBaseCarregado = true;
+    document.querySelector('.map-error-card')?.remove();
+    mostrarStatus('Atlas territorial pronto');
+  });
+
+  window.setTimeout(() => {
+    if (mapaBaseCarregado || falhaAutenticacaoGoogle) return;
+    const estruturaGoogle = document.querySelector('#map .gm-style');
+    const creditosGoogle = document.querySelector('#map a[href*="google.com/maps"]');
+    if (!estruturaGoogle) {
+      mostrarFalhaMapa(
+        'O mapa não foi montado',
+        'O Google carregou o código, mas não criou a área do mapa. Recarregue a página; se continuar, envie esta mensagem.',
+      );
+      return;
+    }
+    if (!creditosGoogle) {
+      mostrarFalhaMapa(
+        'A base do Google foi bloqueada',
+        'Confirme no Google Cloud: Maps JavaScript API ativa, faturamento vinculado e este endereço autorizado. Extensões de bloqueio também podem impedir os mapas.',
+      );
+    }
+  }, 7000);
+}
+
 async function carregarGoogleMaps() {
   const resposta = await fetch('/config', { cache: 'no-store' });
   if (!resposta.ok) throw new Error('Não foi possível obter a configuração do mapa.');
   const config = await resposta.json();
   if (!config.googleMapsApiKey) throw new Error('A chave do Google Maps não está configurada.');
   await new Promise((resolve, reject) => {
-    window.gm_authFailure = () => reject(new Error('A chave do Google Maps foi recusada. Confira as restrições de domínio.'));
+    let finalizado = false;
+    window.gm_authFailure = () => {
+      falhaAutenticacaoGoogle = new Error('A chave do Google Maps foi recusada.');
+      mostrarFalhaMapa(
+        'O Google recusou a chave do mapa',
+        'Ative a Maps JavaScript API, vincule o faturamento e autorize este domínio nas restrições HTTP da chave.',
+      );
+      if (!finalizado) reject(falhaAutenticacaoGoogle);
+    };
     const callback = '__atlasGoogleMapsReady';
     window[callback] = () => {
+      finalizado = true;
       delete window[callback];
       resolve();
     };
@@ -507,6 +558,8 @@ async function carregar() {
       clickableIcons: false,
       backgroundColor: '#173c32',
     });
+    mostrarStatus('Carregando a base do Google Maps…');
+    monitorarMapaBase();
     infoWindow = new google.maps.InfoWindow({ disableAutoPan: true, headerDisabled: true });
     const bounds = new google.maps.LatLngBounds();
     expandirBounds(bounds, limite.features[0]?.geometry?.coordinates);
@@ -518,11 +571,10 @@ async function carregar() {
       (total, item) => total + Number(item.quantidade_registros_questionario || 0), 0,
     );
     renderizarLista();
-    mostrarStatus('Atlas territorial pronto');
   } catch (erro) {
     console.error(erro);
-    mostrarStatus(erro.message, true);
-    elementos.lista.innerHTML = `<div class="empty-survey">${escapar(erro.message)} Adicione o domínio autorizado às restrições da chave e recarregue a página.</div>`;
+    if (!falhaAutenticacaoGoogle) mostrarFalhaMapa('Não foi possível abrir o mapa', erro.message);
+    elementos.lista.innerHTML = `<div class="empty-survey">${escapar(erro.message)}</div>`;
   }
 }
 

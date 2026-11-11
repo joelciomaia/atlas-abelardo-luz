@@ -1,0 +1,31 @@
+{
+  "projeto": "Atlas Interativo dos Assentamentos de Abelardo Luz",
+  "municipio": {
+    "nome": "Abelardo Luz",
+    "uf": "SC",
+    "codigo_ibge": "4200101",
+    "populacao_censo_2022": 17392,
+    "populacao_estimada_2026": 17797,
+    "fonte": "https://www.ibge.gov.br/cidades-e-estados/sc/abelardo-luz.html"
+  },
+  "questionario": {
+    "titulo": "QUESTIONÁRIO SOBRE O INVENTÁRIO DA REALIDADE",
+    "link_fonte": "https://docs.google.com/spreadsheets/d/1SRM9k6Mki8OU_EjpT429l1Se-pFKxz3PgEdjJx2fgHM/edit",
+    "registros_total_na_planilha": 34,
+    "registros_com_respostas": 23,
+    "registros_sem_respostas": 11,
+    "total_colunas_incluindo_identificacao": 41,
+    "total_perguntas_tematicas": 37,
+    "periodo_das_respostas": "05/10/2026 a 11/10/2026",
+    "identificacao_dos_estudantes": "omitida nos dados públicos",
+    "base_de_calculo": "Por pergunta, contam-se apenas respostas fornecidas; menções são por estudante e podem sobrepor-se.",
+    "cuidado_amostral": "A pesquisa não constitui um censo populacional e não deve ser generalizada para o total de cada assentamento."
+  },
+  "geografia": {
+    "assentamentos_catalogados_em_fonte_secundaria": 25,
+    "geometrias_incluidas": false,
+    "sem_coordenadas_inventadas": true,
+    "fonte_poligonos": "https://pamgia.ibama.gov.br/server/rest/services/01_Publicacoes_Bases/assentamentos_incra/MapServer/1",
+    "fonte_limite_municipal": "https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/municipio_2025/UFs/SC/SC_Municipios_2025.zip"
+  }
+}

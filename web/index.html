@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Atlas territorial interativo do município de Abelardo Luz, Santa Catarina."
+    />
+    <meta name="theme-color" content="#173c32" />
+    <title>Atlas Territorial de Abelardo Luz</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+  </head>
+  <body>
+    <a class="skip-link" href="#explorador">Ir para as camadas do território</a>
+
+    <main class="atlas-shell">
+      <div id="map" aria-label="Mapa territorial interativo de Abelardo Luz"></div>
+      <div class="map-shade" aria-hidden="true"></div>
+
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div>
+            <p class="eyebrow">Conhecer · compreender · planejar</p>
+            <h1>Atlas Territorial</h1>
+            <p class="brand-location">Abelardo Luz · Santa Catarina</p>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-button mobile-only" id="toggle-explorador" type="button" aria-label="Abrir lista de assentamentos" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+          </button>
+          <button class="text-button" id="toggle-base" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4-8 4-8-4 8-4Z" /><path d="m4 12 8 4 8-4M4 17l8 4 8-4" /></svg>
+            <span id="base-label">Ver satélite</span>
+          </button>
+          <button class="icon-button" id="abrir-fontes" type="button" aria-label="Abrir informações e fontes">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v6M12 7.5v.1" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <aside class="explorer glass-panel" id="explorador" aria-label="Explorar camadas territoriais">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Navegue pelo município</p>
+            <h2>Camadas</h2>
+          </div>
+          <button class="icon-button close-drawer mobile-only" id="fechar-explorador" type="button" aria-label="Fechar lista">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        </div>
+
+        <div class="layer-switcher" aria-label="Camadas disponíveis">
+          <button class="layer-row is-active" type="button" data-layer="assentamentos" aria-pressed="true">
+            <span class="layer-symbol layer-symbol--settlements"></span>
+            <span><strong>Assentamentos</strong><small>25 territórios oficiais</small></span>
+            <i>Ativa</i>
+          </button>
+          <button class="layer-row is-active" type="button" data-layer="municipio" aria-pressed="true">
+            <span class="layer-symbol layer-symbol--boundary"></span>
+            <span><strong>Limite municipal</strong><small>IBGE · 4200101</small></span>
+            <i>Ativa</i>
+          </button>
+          <button class="layer-row is-pending" type="button" disabled>
+            <span class="layer-symbol layer-symbol--urban"></span>
+            <span><strong>Área urbana</strong><small>Próxima camada</small></span>
+            <i>Em breve</i>
+          </button>
+          <button class="layer-row is-pending" type="button" disabled>
+            <span class="layer-symbol layer-symbol--farms"></span>
+            <span><strong>Imóveis rurais</strong><small>SIGEF / CAR</small></span>
+            <i>Em breve</i>
+          </button>
+        </div>
+
+        <label class="search-box" for="busca">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m16 16 4 4" /></svg>
+          <input id="busca" type="search" placeholder="Buscar território…" autocomplete="off" />
+        </label>
+
+        <div class="explorer-summary">
+          <span><strong id="total-assentamentos">—</strong> assentamentos</span>
+          <span class="summary-dot"></span>
+          <span><strong id="total-respostas">—</strong> relatos</span>
+        </div>
+
+        <div class="territory-list" id="lista-assentamentos" aria-live="polite">
+          <div class="loading-list">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="detail-panel glass-panel" id="painel-detalhes" aria-label="Detalhes do território" aria-hidden="true">
+        <button class="detail-close" id="fechar-detalhes" type="button" aria-label="Fechar detalhes">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+        <div id="conteudo-detalhes"></div>
+      </section>
+
+      <div class="map-tools" aria-label="Controles do mapa">
+        <button id="zoom-in" type="button" aria-label="Aproximar mapa">+</button>
+        <button id="zoom-out" type="button" aria-label="Afastar mapa">−</button>
+        <button id="visao-geral" type="button" aria-label="Recentrar em Abelardo Luz" title="Recentrar em Abelardo Luz">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10V4h6M20 14v6h-6M4 4l6 6M20 20l-6-6" /></svg>
+        </button>
+      </div>
+
+      <div class="map-hint" id="map-hint">
+        <span class="hint-cursor" aria-hidden="true"></span>
+        Passe o mouse para explorar · clique para fixar
+      </div>
+
+      <div class="legend" aria-label="Legenda do mapa">
+        <span><i class="legend-swatch territory"></i>Assentamentos</span>
+        <span><i class="legend-swatch selected"></i>Selecionado</span>
+        <span><i class="legend-line"></i>Limite municipal</span>
+        <span class="google-base">Base Google Maps</span>
+      </div>
+
+      <div class="status-pill" id="status" role="status" aria-live="polite">
+        <span class="pulse"></span> Preparando o atlas…
+      </div>
+
+      <div class="drawer-backdrop" id="backdrop" hidden></div>
+    </main>
+
+    <dialog class="sources-dialog" id="fontes-dialog">
+      <form method="dialog" class="dialog-card">
+        <button class="detail-close" value="close" aria-label="Fechar informações">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+        <p class="eyebrow">Sobre o projeto</p>
+        <h2>Um território contado em camadas</h2>
+        <p>
+          Este atlas organiza o território municipal em camadas oficiais e temáticas. A primeira
+          etapa reúne o limite de Abelardo Luz, os assentamentos e a pesquisa escolar anonimizada.
+        </p>
+        <div class="source-block">
+          <h3>Fontes cartográficas</h3>
+          <p><strong>Assentamentos:</strong> INCRA, por meio do serviço cartográfico do IBAMA.</p>
+          <p><strong>Limite municipal:</strong> IBGE, código municipal 4200101.</p>
+        </div>
+        <div class="source-block">
+          <h3>Pesquisa escolar</h3>
+          <p>
+            Questionário “Inventário da Realidade”, aplicado em outubro de 2026. Foram consideradas
+            23 respostas; nenhuma informação individual é exibida.
+          </p>
+        </div>
+        <p class="source-note">
+          Áreas, famílias e códigos SIPRA são apresentados conforme os registros oficiais disponíveis.
+        </p>
+      </form>
+    </dialog>
+
+    <script type="module" src="./google-app.js?v=3"></script>
+  </body>
+</html>

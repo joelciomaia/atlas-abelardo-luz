@@ -1,0 +1,29 @@
+{
+  "data_utc": "2026-11-11T23:58:13.977Z",
+  "municipio": "Abelardo Luz/SC",
+  "codigo_ibge": 4200101,
+  "bbox_de_busca_nao_oficial": [
+    -52.65,
+    -26.85,
+    -51.95,
+    -26.25
+  ],
+  "aviso": "PARCELAS SIGEF NÃO SÃO NECESSARIAMENTE LOTES DOS ASSENTAMENTOS; número_lote_oficial não disponível.",
+  "camadas": [
+    {
+      "tipo": "publico",
+      "consultadas_bbox": 3045,
+      "retidas": 2555,
+      "arquivo": "C:\\PROJETOS\\ATLAS\\atlas-interativo-abelardo-luz\\web\\geojson\\parcelas_sigef_publico_candidatas.geojson",
+      "criterio": "intersecao_com_limite_municipal_IBGE"
+    },
+    {
+      "tipo": "privado",
+      "consultadas_bbox": 2061,
+      "retidas": 534,
+      "arquivo": "C:\\PROJETOS\\ATLAS\\atlas-interativo-abelardo-luz\\web\\geojson\\parcelas_sigef_privado_candidatas.geojson",
+      "criterio": "intersecao_com_limite_municipal_IBGE"
+    }
+  ],
+  "erros": []
+}

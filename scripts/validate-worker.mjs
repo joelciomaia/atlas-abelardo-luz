@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { gunzipSync } from 'node:zlib';
 
 const root = join(import.meta.dirname, '..');
 const workerPath = join(root, 'dist', 'server', 'index.js');
@@ -59,9 +60,39 @@ for (const path of [
   '/dados/assentamentos.json',
   '/geojson/abelardo-luz.geojson',
   '/geojson/assentamentos.geojson',
+  '/geojson/resultado_consulta_sigef.json',
 ]) {
   const response = await worker.fetch(new Request(`https://atlas.local${path}`), {});
   if (response.status !== 200) throw new Error(`Rota ausente no pacote: ${path}`);
 }
 
-console.log('Worker validado: mapa, dados, configuração e manifesto estão consistentes.');
+for (const [path, quantidadeEsperada] of [
+  ['/geojson/parcelas_sigef_publico_candidatas.geojson', 2555],
+  ['/geojson/parcelas_sigef_privado_candidatas.geojson', 534],
+]) {
+  const response = await worker.fetch(new Request(`https://atlas.local${path}`), {});
+  if (response.status !== 200) throw new Error(`Rota SIGEF ausente no pacote: ${path}`);
+  if (response.headers.get('content-encoding') !== 'gzip') {
+    throw new Error(`GeoJSON SIGEF não foi compactado: ${path}`);
+  }
+  const bruto = Buffer.from(await response.arrayBuffer());
+  const geojson = JSON.parse(gunzipSync(bruto).toString('utf8'));
+  if (geojson.type !== 'FeatureCollection' || geojson.features.length !== quantidadeEsperada) {
+    throw new Error(`Quantidade inesperada de parcelas em ${path}.`);
+  }
+  const chavesPermitidas = new Set([
+    'id_sigef', 'codigo_imovel', 'situacao', 'municipio_codigo_origem', 'fonte',
+    'tipo_camada', 'status_validacao_lote', 'numero_lote_oficial', 'assentamento_id',
+    'criterio_selecao', 'possui_dados_de_proprietario',
+  ]);
+  for (const feature of geojson.features) {
+    if (Object.keys(feature.properties || {}).some((chave) => !chavesPermitidas.has(chave))) {
+      throw new Error(`Campo não autorizado encontrado em ${path}.`);
+    }
+    if (feature.properties?.numero_lote_oficial !== null || feature.properties?.possui_dados_de_proprietario !== false) {
+      throw new Error(`A camada SIGEF contém dado incompatível com a publicação em ${path}.`);
+    }
+  }
+}
+
+console.log('Worker validado: mapa, parcelas SIGEF, privacidade, configuração e manifesto estão consistentes.');

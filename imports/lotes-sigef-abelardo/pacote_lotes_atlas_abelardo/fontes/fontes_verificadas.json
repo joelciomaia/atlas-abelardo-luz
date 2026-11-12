@@ -1,0 +1,35 @@
+{
+  "municipio": "Abelardo Luz",
+  "codigo_ibge": 4200101,
+  "uf": "SC",
+  "observacao": "Camadas do SIGEF sao PARCELAS RURAIS, nao necessariamente lotes internos dos assentamentos.",
+  "servicos": [
+    {
+      "tipo": "publico",
+      "layer_url": "https://pamgia.ibama.gov.br/server/rest/services/BasesSincronizadas/lim_sigef_publico_incra_p/FeatureServer/0",
+      "query_url": "https://pamgia.ibama.gov.br/server/rest/services/BasesSincronizadas/lim_sigef_publico_incra_p/FeatureServer/0/query",
+      "nome": "SIGEF Publico INCRA",
+      "formato": "ArcGIS FeatureServer; query f=geojson",
+      "status": "metadados publicados e conferidos; nao foi possivel testar a consulta de feicoes neste ambiente"
+    },
+    {
+      "tipo": "privado",
+      "layer_url": "https://pamgia.ibama.gov.br/server/rest/services/01_Publicacoes_Bases/lim_imovel_sigef_privado_a/FeatureServer/9",
+      "query_url": "https://pamgia.ibama.gov.br/server/rest/services/01_Publicacoes_Bases/lim_imovel_sigef_privado_a/FeatureServer/9/query",
+      "nome": "SIGEF Privado INCRA",
+      "formato": "ArcGIS FeatureServer; query f=geojson",
+      "status": "metadados publicados e conferidos; nao foi possivel testar a consulta de feicoes neste ambiente"
+    }
+  ],
+  "consulta_recomendada": {
+    "where": "1=1",
+    "geometryType": "esriGeometryEnvelope",
+    "inSR": 4326,
+    "spatialRel": "esriSpatialRelIntersects",
+    "f": "geojson",
+    "outSR": 4326
+  },
+  "fonte_acervo": "https://acervofundiario.incra.gov.br/acervo/login.php",
+  "contato_cartografia_incra": "coordenacao.cartografia@incra.gov.br",
+  "documento_lote_car": "https://www.gov.br/incra/pt-br/centrais-de-conteudos/publicacoes/manuais/perguntas_e_respostas_modulo_lote_car_mlc.pdf"
+}

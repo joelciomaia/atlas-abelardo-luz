@@ -16,7 +16,7 @@ const estado = {
   selecionado: null,
   limiteBounds: null,
   baseAtual: 'roadmap',
-  camadas: { assentamentos: true, municipio: true },
+  camadas: { assentamentos: true, municipio: true, parcelasSigef: false },
 };
 
 let mapa;
@@ -26,6 +26,15 @@ let mascaraMunicipal;
 let infoWindow;
 let falhaAutenticacaoGoogle = null;
 let mapaBaseCarregado = false;
+let parcelasSigefLayers = [];
+let parcelasSigefCarregadas = false;
+let parcelasSigefCarregando = null;
+let parcelasSigefInfoWindow;
+
+const arquivosParcelasSigef = [
+  { url: './geojson/parcelas_sigef_publico_candidatas.geojson', tipo: 'Pública', cor: '#eab308' },
+  { url: './geojson/parcelas_sigef_privado_candidatas.geojson', tipo: 'Privada', cor: '#f59e0b' },
+];
 
 const nomesIndicadores = {
   araucaria_ou_pinheiro: 'Araucária ou pinheiro',
@@ -62,6 +71,12 @@ const gruposIndicadores = [
   ['criacao_animais_relatada', 'Criação de animais'],
   ['destinacao_residuos_relatada', 'Destinação de resíduos'],
 ];
+
+const situacoesSigef = {
+  REGISTRADA: 'Registrada',
+  TITULADANAOREGISTRADA: 'Titulada, não registrada',
+  NAOTITULADA: 'Não titulada',
+};
 
 const $ = (seletor) => document.querySelector(seletor);
 
@@ -293,6 +308,117 @@ function configurarCamadas(geojsonAssentamentos, geojsonMunicipio) {
   mascaraMunicipal = criarMascara(geojsonMunicipio);
 }
 
+function atualizarControleParcelasSigef() {
+  const botao = document.querySelector('[data-layer="parcelasSigef"]');
+  if (!botao) return;
+  const ativa = estado.camadas.parcelasSigef;
+  const zoomSuficiente = (mapa?.getZoom() || 0) >= 13;
+  botao.classList.toggle('is-active', ativa);
+  botao.setAttribute('aria-pressed', String(ativa));
+  const rotulo = botao.querySelector('i');
+  if (!ativa) rotulo.textContent = 'Oculta';
+  else if (!zoomSuficiente) rotulo.textContent = 'Zoom ≥ 13';
+  else if (!parcelasSigefCarregadas) rotulo.textContent = 'Carregando';
+  else rotulo.textContent = 'Ativa';
+}
+
+async function carregarParcelasSigef() {
+  if (parcelasSigefCarregadas) return;
+  if (parcelasSigefCarregando) return parcelasSigefCarregando;
+
+  parcelasSigefCarregando = (async () => {
+    mostrarStatus('Carregando parcelas SIGEF…');
+    let total = 0;
+    const novasCamadas = [];
+    for (const arquivo of arquivosParcelasSigef) {
+      const resposta = await fetch(arquivo.url);
+      if (!resposta.ok) throw new Error(`Não foi possível carregar ${arquivo.tipo.toLowerCase()} SIGEF.`);
+      const geojson = await resposta.json();
+      if (geojson.type !== 'FeatureCollection') throw new Error('O arquivo de parcelas SIGEF é inválido.');
+
+      const camada = new google.maps.Data();
+      const features = camada.addGeoJson(geojson);
+      total += features.length;
+      camada.setStyle({
+        clickable: true,
+        cursor: 'pointer',
+        fillColor: arquivo.cor,
+        fillOpacity: 0.12,
+        strokeColor: arquivo.cor,
+        strokeOpacity: 0.92,
+        strokeWeight: 1.15,
+        zIndex: 24,
+      });
+      camada.addListener('mouseover', (event) => {
+        camada.overrideStyle(event.feature, {
+          fillOpacity: 0.32,
+          strokeColor: '#fff4b8',
+          strokeWeight: 2.6,
+          zIndex: 42,
+        });
+      });
+      camada.addListener('mouseout', (event) => camada.revertStyle(event.feature));
+      camada.addListener('click', (event) => {
+        const codigo = event.feature.getProperty('id_sigef') || 'Indisponível';
+        const situacaoBruta = event.feature.getProperty('situacao');
+        const situacao = situacoesSigef[situacaoBruta] || situacaoBruta || 'Não informada';
+        const fonte = event.feature.getProperty('fonte') || `SIGEF ${arquivo.tipo}`;
+        parcelasSigefInfoWindow.setContent(
+          `<div class="google-tooltip"><strong>Parcela rural SIGEF</strong><span><b>Código SIGEF:</b> ${escapar(codigo)}</span><span><b>Situação:</b> ${escapar(situacao)}</span><span><b>Base:</b> ${escapar(fonte)}</span><small>Parcela candidata; não confirmada como lote interno de assentamento.</small></div>`,
+        );
+        parcelasSigefInfoWindow.setPosition(event.latLng);
+        parcelasSigefInfoWindow.open({ map: mapa, shouldFocus: false });
+      });
+      novasCamadas.push(camada);
+    }
+
+    if (!total) throw new Error('A consulta SIGEF não retornou parcelas para Abelardo Luz.');
+    parcelasSigefLayers = novasCamadas;
+    parcelasSigefCarregadas = true;
+    mostrarStatus(`${formatarNumero(total)} parcelas SIGEF carregadas`);
+  })();
+
+  try {
+    await parcelasSigefCarregando;
+  } catch (erro) {
+    estado.camadas.parcelasSigef = false;
+    const botao = document.querySelector('[data-layer="parcelasSigef"]');
+    if (botao) {
+      botao.disabled = true;
+      botao.classList.add('is-pending');
+      botao.querySelector('i').textContent = 'Indisponível';
+    }
+    mostrarStatus(erro.message, true);
+    throw erro;
+  } finally {
+    parcelasSigefCarregando = null;
+  }
+}
+
+async function sincronizarParcelasSigef() {
+  const ativa = estado.camadas.parcelasSigef;
+  const zoomSuficiente = (mapa?.getZoom() || 0) >= 13;
+  atualizarControleParcelasSigef();
+
+  if (ativa && zoomSuficiente && !parcelasSigefCarregadas) {
+    try {
+      await carregarParcelasSigef();
+    } catch (erro) {
+      console.error('[Atlas] Falha ao carregar parcelas SIGEF:', erro);
+      return;
+    }
+  }
+
+  const exibir = estado.camadas.parcelasSigef && (mapa?.getZoom() || 0) >= 13 && parcelasSigefCarregadas;
+  parcelasSigefLayers.forEach((camada) => camada.setMap(exibir ? mapa : null));
+  if (!exibir) parcelasSigefInfoWindow?.close();
+  atualizarControleParcelasSigef();
+
+  if (ativa && !zoomSuficiente) {
+    mostrarStatus('Parcelas SIGEF: aproxime o mapa até o zoom 13');
+  }
+}
+
 function renderizarLista(filtro = '') {
   const termo = normalizar(filtro);
   const itens = estado.catalogo
@@ -484,6 +610,10 @@ function alternarCamada(botao) {
   const nome = botao.dataset.layer;
   estado.camadas[nome] = !estado.camadas[nome];
   const ativa = estado.camadas[nome];
+  if (nome === 'parcelasSigef') {
+    sincronizarParcelasSigef();
+    return;
+  }
   botao.classList.toggle('is-active', ativa);
   botao.setAttribute('aria-pressed', String(ativa));
   botao.querySelector('i').textContent = ativa ? 'Ativa' : 'Oculta';
@@ -609,6 +739,8 @@ async function carregar() {
     mostrarStatus('Carregando a base do Google Maps…');
     monitorarMapaBase();
     infoWindow = new google.maps.InfoWindow({ disableAutoPan: true, headerDisabled: true });
+    parcelasSigefInfoWindow = new google.maps.InfoWindow({ disableAutoPan: false, headerDisabled: true });
+    mapa.addListener('zoom_changed', sincronizarParcelasSigef);
     const bounds = new google.maps.LatLngBounds();
     expandirBounds(bounds, limite.features[0]?.geometry?.coordinates);
     estado.limiteBounds = bounds;

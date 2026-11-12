@@ -1,0 +1,14 @@
+TAREFA OBJETIVA — Adicionar camada de parcelas rurais SIGEF ao Atlas Interativo de Abelardo Luz.
+NAO pesquisar novas APIs nem alterar o projeto inteiro. Use somente o pacote anexado.
+
+1. Copie scripts/baixar_parcelas_sigef.py e codigo/camadaParcelasSigef.ts para as pastas correspondentes do projeto React/Vite.
+2. Execute UMA VEZ: python scripts/baixar_parcelas_sigef.py
+   O script consulta automaticamente os dois endpoints oficiais listados em fontes/fontes_verificadas.json e gera GeoJSONs em public/geojson/. Sem internet do VSCode/Codex para pesquisas; apenas a execucao do script necessita conexao para baixar os dados oficiais.
+3. Caso ja exista public/geojson/abelardo-luz.geojson valido, instale shapely (pip install shapely) e o script filtrara as parcelas que interceptam o municipio. Sem essa malha, usa o campo municipio_ ou, caso ausente, mantem candidatas da janela de busca, indicando necessidade de conferencia.
+4. Ligue a camada ao Google Maps ja existente usando instalarParcelasSigef(map); crie um controle de mostrar/ocultar e carregue a camada so com zoom >= 13. Preserve as camadas de assentamentos e demais funcionalidades atuais.
+5. Ao passar o mouse sobre uma parcela, realce; ao clicar, exiba codigo SIGEF e situacao. NAO rotule codigo SIGEF como 'Numero do lote'. Os arquivos nao contem numero oficial de lote ou nome de titular.
+6. Se a importacao retornar 0 feicoes ou erro de API, relate claramente o erro e mantenha a funcionalidade desabilitada, SEM inventar geometrias ou nomes.
+7. Diferencie visualmente 'Parcelas SIGEF — candidatas' de 'Lotes oficiais — aguardando parcelamento INCRA'.
+8. Mantenha toda a publicacao limitada a dados sem nomes de proprietarios/beneficiarios.
+
+NAO gaste tokens pesquisando URLs: elas estao no JSON de fontes. NAO troque a API Google Maps. NAO substitua a chave existente. Apenas integre e teste.

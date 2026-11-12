@@ -368,7 +368,14 @@ svg {
 }
 
 .layer-symbol--urban { background: linear-gradient(135deg, #d5a65c 0 45%, #9b7440 45% 55%, #d5a65c 55%); }
-.layer-symbol--farms { background: repeating-linear-gradient(45deg, #6d8c52 0 4px, #9ab373 4px 8px); }
+.layer-symbol--farms {
+  border: 1px solid #f4c84d;
+  background: repeating-linear-gradient(45deg, rgba(234, 179, 8, .28) 0 4px, rgba(244, 200, 77, .62) 4px 8px);
+}
+.layer-symbol--lots {
+  border: 1px dashed #9aaba1;
+  background: linear-gradient(135deg, transparent 45%, rgba(154,171,161,.55) 46% 52%, transparent 53%);
+}
 
 .search-box svg {
   width: 18px;
@@ -840,6 +847,11 @@ body.has-selection .map-tools { right: 430px; }
 .legend-swatch.selected {
   border-color: #ffd3b2;
   background: rgba(239, 131, 84, 0.7);
+}
+
+.legend-swatch.sigef {
+  border-color: #f4c84d;
+  background: rgba(234, 179, 8, 0.22);
 }
 
 .legend-line {

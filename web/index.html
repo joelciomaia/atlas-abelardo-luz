@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#173c32" />
     <title>Atlas Territorial de Abelardo Luz</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=6" />
+    <link rel="stylesheet" href="./styles.css?v=7" />
   </head>
   <body>
     <a class="skip-link" href="#explorador">Ir para as camadas do território</a>
@@ -72,10 +72,15 @@
             <span><strong>Área urbana</strong><small>Próxima camada</small></span>
             <i>Em breve</i>
           </button>
-          <button class="layer-row is-pending" type="button" disabled>
+          <button class="layer-row" type="button" data-layer="parcelasSigef" aria-pressed="false">
             <span class="layer-symbol layer-symbol--farms"></span>
-            <span><strong>Imóveis rurais</strong><small>SIGEF / CAR</small></span>
-            <i>Em breve</i>
+            <span><strong>Parcelas SIGEF</strong><small>3.089 candidatas · zoom ≥ 13</small></span>
+            <i>Oculta</i>
+          </button>
+          <button class="layer-row is-pending" type="button" disabled>
+            <span class="layer-symbol layer-symbol--lots"></span>
+            <span><strong>Lotes oficiais</strong><small>Parcelamento interno INCRA</small></span>
+            <i>Aguardando</i>
           </button>
         </div>
 
@@ -120,6 +125,7 @@
       <div class="legend" aria-label="Legenda do mapa">
         <span><i class="legend-swatch territory"></i>Assentamentos</span>
         <span><i class="legend-swatch selected"></i>Selecionado</span>
+        <span><i class="legend-swatch sigef"></i>Parcelas SIGEF</span>
         <span><i class="legend-line"></i>Limite municipal</span>
         <span class="google-base">Base Google Maps</span>
       </div>
@@ -146,6 +152,7 @@
           <h3>Fontes cartográficas</h3>
           <p><strong>Assentamentos:</strong> INCRA, por meio do serviço cartográfico do IBAMA.</p>
           <p><strong>Limite municipal:</strong> IBGE, código municipal 4200101.</p>
+          <p><strong>Parcelas candidatas:</strong> SIGEF/INCRA, serviços oficiais disponibilizados pelo IBAMA.</p>
         </div>
         <div class="source-block">
           <h3>Pesquisa escolar</h3>
@@ -160,6 +167,6 @@
       </form>
     </dialog>
 
-    <script type="module" src="./google-app.js?v=6"></script>
+    <script type="module" src="./google-app.js?v=7"></script>
   </body>
 </html>

@@ -1,23 +1,37 @@
-# Atlas dos Assentamentos de Abelardo Luz
+# Atlas Territorial de Abelardo Luz
 
-Site cartográfico interativo para explorar os assentamentos que cruzam o território de Abelardo Luz (SC). A interface oferece destaque ao passar o mouse, seleção fixa por clique, busca, mapa de satélite e painel com dados oficiais e relatos escolares anonimizados.
+Site cartográfico interativo para explorar o território de Abelardo Luz (SC), seus assentamentos e as parcelas rurais candidatas importadas do SIGEF. A interface usa Google Maps, seleção por clique, busca, camadas territoriais e painéis com dados oficiais e relatos escolares anonimizados.
+
+## Endereços
+
+- GitHub Pages: `https://joelciomaia.github.io/atlas-abelardo-luz/`
+- Site principal: `https://atlas-abelardo-luz.joelciomaia.chatgpt.site`
 
 ## Estrutura
 
-- `dist/`: site estático pronto para publicação.
-- `scripts/preparar-geodados.mjs`: consulta o limite municipal do IBGE e os polígonos do INCRA/IBAMA, cruza os dados com o catálogo escolar e gera os arquivos finais.
+- `web/`: HTML, CSS, JavaScript e dados publicados.
+- `scripts/build-pages.mjs`: gera a versão estática para GitHub Pages.
+- `scripts/build-worker.mjs`: empacota o Worker usado no Site principal.
+- `scripts/baixar-parcelas-sigef.mjs`: importa as parcelas a partir dos serviços oficiais fornecidos no pacote do projeto.
 - `atlas_assentamentos_base/`: material de origem fornecido para o projeto.
 
-## Atualização dos dados
+## Publicação no GitHub Pages
 
-```powershell
-node scripts/preparar-geodados.mjs
+O workflow `.github/workflows/deploy-pages.yml` publica automaticamente a branch `main`. A chave do Google Maps não é armazenada no repositório: ela deve existir no Secret `GOOGLE_MAPS_API_KEY`.
+
+No Google Cloud, restrinja a chave da Maps JavaScript API aos endereços utilizados pelo projeto, incluindo:
+
+```text
+https://joelciomaia.github.io/atlas-abelardo-luz/*
 ```
 
-## Prévia local
+## Validação local
 
 ```powershell
-node scripts/preview.mjs
+$env:GOOGLE_MAPS_API_KEY='chave-de-teste'
+node scripts/build-pages.mjs
+node scripts/build-worker.mjs
+node scripts/validate-worker.mjs
 ```
 
-O atlas diferencia dados oficiais de relatos amostrais. As respostas dos estudantes não devem ser interpretadas como população total ou censo dos assentamentos.
+O atlas diferencia dados oficiais de relatos amostrais. As parcelas SIGEF são candidatas por interseção espacial e não são apresentadas como lotes internos oficiais dos assentamentos.

@@ -6,3 +6,4 @@
 !.env.example
 .DS_Store
 Thumbs.db
+dist-pages/

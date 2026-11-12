@@ -61,7 +61,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    if (url.pathname === '/config') {
+    if (url.pathname === '/config' || url.pathname === '/config.json') {
       return Response.json(
         { googleMapsApiKey: env.GOOGLE_MAPS_API_KEY || '' },
         {

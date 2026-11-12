@@ -768,7 +768,7 @@ function monitorarMapaBase() {
 }
 
 async function carregarGoogleMaps() {
-  const resposta = await fetch('/config', { cache: 'no-store' });
+  const resposta = await fetch('./config.json', { cache: 'no-store' });
   if (!resposta.ok) throw new Error('Não foi possível obter a configuração do mapa.');
   const config = await resposta.json();
   if (!config.googleMapsApiKey) throw new Error('A chave do Google Maps não está configurada.');

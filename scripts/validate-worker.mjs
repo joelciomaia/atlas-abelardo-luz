@@ -33,7 +33,7 @@ if (!worker || typeof worker.fetch !== 'function') {
 
 const fakeKey = 'test-key-not-a-real-credential';
 const configResponse = await worker.fetch(
-  new Request('https://atlas.local/config'),
+  new Request('https://atlas.local/config.json'),
   { GOOGLE_MAPS_API_KEY: fakeKey },
 );
 const config = await configResponse.json();
@@ -42,6 +42,14 @@ if (configResponse.status !== 200 || config.googleMapsApiKey !== fakeKey) {
 }
 if (configResponse.headers.get('cache-control') !== 'no-store, max-age=0') {
   throw new Error('A rota /config precisa impedir cache.');
+}
+
+const legacyConfigResponse = await worker.fetch(
+  new Request('https://atlas.local/config'),
+  { GOOGLE_MAPS_API_KEY: fakeKey },
+);
+if (legacyConfigResponse.status !== 200) {
+  throw new Error('A rota de configuração legada deixou de funcionar no Sites.');
 }
 
 const pageResponse = await worker.fetch(new Request('https://atlas.local/'), {});

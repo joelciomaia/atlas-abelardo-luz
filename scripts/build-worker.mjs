@@ -46,7 +46,6 @@ function responseHeaders(asset) {
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
   };
-  if (asset.encoding === 'base64-gzip') headers['Content-Encoding'] = 'gzip';
   return headers;
 }
 
@@ -55,7 +54,7 @@ function responseBody(asset) {
   const binary = atob(asset.body);
   const bytes = new Uint8Array(binary.length);
   for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
-  return bytes;
+  return new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
 }
 
 export default {

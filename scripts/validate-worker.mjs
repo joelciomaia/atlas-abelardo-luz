@@ -1,7 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { gunzipSync } from 'node:zlib';
 
 const root = join(import.meta.dirname, '..');
 const workerPath = join(root, 'dist', 'server', 'index.js');
@@ -72,11 +71,10 @@ for (const [path, quantidadeEsperada] of [
 ]) {
   const response = await worker.fetch(new Request(`https://atlas.local${path}`), {});
   if (response.status !== 200) throw new Error(`Rota SIGEF ausente no pacote: ${path}`);
-  if (response.headers.get('content-encoding') !== 'gzip') {
-    throw new Error(`GeoJSON SIGEF não foi compactado: ${path}`);
+  if (response.headers.has('content-encoding')) {
+    throw new Error(`A resposta pública não deve expor a compactação interna: ${path}`);
   }
-  const bruto = Buffer.from(await response.arrayBuffer());
-  const geojson = JSON.parse(gunzipSync(bruto).toString('utf8'));
+  const geojson = await response.json();
   if (geojson.type !== 'FeatureCollection' || geojson.features.length !== quantidadeEsperada) {
     throw new Error(`Quantidade inesperada de parcelas em ${path}.`);
   }
@@ -93,6 +91,15 @@ for (const [path, quantidadeEsperada] of [
       throw new Error(`A camada SIGEF contém dado incompatível com a publicação em ${path}.`);
     }
   }
+}
+
+const assentamentosResponse = await worker.fetch(
+  new Request('https://atlas.local/geojson/assentamentos.geojson'),
+  {},
+);
+const assentamentosGeojson = await assentamentosResponse.json();
+if (assentamentosGeojson.type !== 'FeatureCollection' || assentamentosGeojson.features.length !== 25) {
+  throw new Error('O GeoJSON principal não foi descompactado corretamente pelo Worker.');
 }
 
 console.log('Worker validado: mapa, parcelas SIGEF, privacidade, configuração e manifesto estão consistentes.');

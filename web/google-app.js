@@ -14,6 +14,7 @@ const estado = {
   localidadesPorAssentamento: new Map(),
   featuresPorId: new Map(),
   selecionado: null,
+  parcelaSelecionadaSigef: null,
   limiteBounds: null,
   baseAtual: 'roadmap',
   camadas: { assentamentos: true, municipio: true, parcelasSigef: false },
@@ -29,7 +30,6 @@ let mapaBaseCarregado = false;
 let parcelasSigefLayers = [];
 let parcelasSigefCarregadas = false;
 let parcelasSigefCarregando = null;
-let parcelasSigefInfoWindow;
 
 const arquivosParcelasSigef = [
   { url: './geojson/parcelas_sigef_publico_candidatas.geojson', tipo: 'Pública', cor: '#eab308' },
@@ -147,11 +147,11 @@ function estiloAssentamento(feature) {
       clickable: true,
       cursor: 'pointer',
       fillColor: '#ef8354',
-      fillOpacity: 0.76,
+      fillOpacity: 0.12,
       strokeColor: '#fff5e9',
       strokeOpacity: 1,
       strokeWeight: 4,
-      zIndex: 30,
+      zIndex: 18,
     };
   }
   return {
@@ -311,15 +311,66 @@ function configurarCamadas(geojsonAssentamentos, geojsonMunicipio) {
 function atualizarControleParcelasSigef() {
   const botao = document.querySelector('[data-layer="parcelasSigef"]');
   if (!botao) return;
-  const ativa = estado.camadas.parcelasSigef;
+  const assentamentoId = estado.porId.has(estado.selecionado) ? estado.selecionado : null;
+  const ativaManual = estado.camadas.parcelasSigef;
+  const ativa = ativaManual || Boolean(assentamentoId);
   const zoomSuficiente = (mapa?.getZoom() || 0) >= 13;
   botao.classList.toggle('is-active', ativa);
-  botao.setAttribute('aria-pressed', String(ativa));
+  botao.setAttribute('aria-pressed', String(ativaManual));
   const rotulo = botao.querySelector('i');
   if (!ativa) rotulo.textContent = 'Oculta';
   else if (!zoomSuficiente) rotulo.textContent = 'Zoom ≥ 13';
   else if (!parcelasSigefCarregadas) rotulo.textContent = 'Carregando';
+  else if (assentamentoId && !ativaManual) rotulo.textContent = 'No assentamento';
   else rotulo.textContent = 'Ativa';
+}
+
+function idsAssentamentosDaParcela(feature) {
+  const ids = feature.getProperty('assentamento_ids');
+  if (Array.isArray(ids)) return ids;
+  const id = feature.getProperty('assentamento_id');
+  return id ? [id] : [];
+}
+
+function assentamentoSelecionadoId() {
+  return estado.porId.has(estado.selecionado) ? estado.selecionado : null;
+}
+
+function parcelaVisivelNoContexto(feature) {
+  const assentamentoId = assentamentoSelecionadoId();
+  if (assentamentoId) return idsAssentamentosDaParcela(feature).includes(assentamentoId);
+  return estado.camadas.parcelasSigef;
+}
+
+function estiloParcelaSigef(feature, arquivo) {
+  const selecionada = estado.parcelaSelecionadaSigef?.feature === feature;
+  return {
+    clickable: parcelaVisivelNoContexto(feature),
+    cursor: 'pointer',
+    visible: parcelaVisivelNoContexto(feature),
+    fillColor: selecionada ? '#ef8354' : arquivo.cor,
+    fillOpacity: selecionada ? 0.38 : 0.08,
+    strokeColor: selecionada ? '#ffffff' : arquivo.cor,
+    strokeOpacity: 1,
+    strokeWeight: selecionada ? 3.2 : 1.5,
+    zIndex: selecionada ? 48 : 32,
+  };
+}
+
+function atualizarEstilosParcelasSigef() {
+  parcelasSigefLayers.forEach(({ camada, arquivo }) => {
+    camada.setStyle((feature) => estiloParcelaSigef(feature, arquivo));
+  });
+}
+
+function contarParcelasDoAssentamento(assentamentoId) {
+  let total = 0;
+  parcelasSigefLayers.forEach(({ camada }) => {
+    camada.forEach((feature) => {
+      if (idsAssentamentosDaParcela(feature).includes(assentamentoId)) total += 1;
+    });
+  });
+  return total;
 }
 
 async function carregarParcelasSigef() {
@@ -339,37 +390,23 @@ async function carregarParcelasSigef() {
       const camada = new google.maps.Data();
       const features = camada.addGeoJson(geojson);
       total += features.length;
-      camada.setStyle({
-        clickable: true,
-        cursor: 'pointer',
-        fillColor: arquivo.cor,
-        fillOpacity: 0.12,
-        strokeColor: arquivo.cor,
-        strokeOpacity: 0.92,
-        strokeWeight: 1.15,
-        zIndex: 24,
-      });
+      camada.setStyle((feature) => estiloParcelaSigef(feature, arquivo));
       camada.addListener('mouseover', (event) => {
         camada.overrideStyle(event.feature, {
-          fillOpacity: 0.32,
+          fillOpacity: 0.3,
           strokeColor: '#fff4b8',
           strokeWeight: 2.6,
-          zIndex: 42,
+          zIndex: 46,
         });
       });
       camada.addListener('mouseout', (event) => camada.revertStyle(event.feature));
       camada.addListener('click', (event) => {
-        const codigo = event.feature.getProperty('id_sigef') || 'Indisponível';
-        const situacaoBruta = event.feature.getProperty('situacao');
-        const situacao = situacoesSigef[situacaoBruta] || situacaoBruta || 'Não informada';
-        const fonte = event.feature.getProperty('fonte') || `SIGEF ${arquivo.tipo}`;
-        parcelasSigefInfoWindow.setContent(
-          `<div class="google-tooltip"><strong>Parcela rural SIGEF</strong><span><b>Código SIGEF:</b> ${escapar(codigo)}</span><span><b>Situação:</b> ${escapar(situacao)}</span><span><b>Base:</b> ${escapar(fonte)}</span><small>Parcela candidata; não confirmada como lote interno de assentamento.</small></div>`,
-        );
-        parcelasSigefInfoWindow.setPosition(event.latLng);
-        parcelasSigefInfoWindow.open({ map: mapa, shouldFocus: false });
+        estado.parcelaSelecionadaSigef = { feature: event.feature, tipo: arquivo.tipo };
+        atualizarEstilosParcelasSigef();
+        renderizarDetalhesParcelaSigef(event.feature, arquivo.tipo);
+        abrirPainel();
       });
-      novasCamadas.push(camada);
+      novasCamadas.push({ camada, arquivo });
     }
 
     if (!total) throw new Error('A consulta SIGEF não retornou parcelas para Abelardo Luz.');
@@ -396,7 +433,8 @@ async function carregarParcelasSigef() {
 }
 
 async function sincronizarParcelasSigef() {
-  const ativa = estado.camadas.parcelasSigef;
+  const assentamentoId = assentamentoSelecionadoId();
+  const ativa = estado.camadas.parcelasSigef || Boolean(assentamentoId);
   const zoomSuficiente = (mapa?.getZoom() || 0) >= 13;
   atualizarControleParcelasSigef();
 
@@ -409,13 +447,19 @@ async function sincronizarParcelasSigef() {
     }
   }
 
-  const exibir = estado.camadas.parcelasSigef && (mapa?.getZoom() || 0) >= 13 && parcelasSigefCarregadas;
-  parcelasSigefLayers.forEach((camada) => camada.setMap(exibir ? mapa : null));
-  if (!exibir) parcelasSigefInfoWindow?.close();
+  const exibir = ativa && (mapa?.getZoom() || 0) >= 13 && parcelasSigefCarregadas;
+  parcelasSigefLayers.forEach(({ camada }) => camada.setMap(exibir ? mapa : null));
+  if (parcelasSigefCarregadas) atualizarEstilosParcelasSigef();
   atualizarControleParcelasSigef();
 
   if (ativa && !zoomSuficiente) {
     mostrarStatus('Parcelas SIGEF: aproxime o mapa até o zoom 13');
+  } else if (exibir && assentamentoId) {
+    const total = contarParcelasDoAssentamento(assentamentoId);
+    const nome = estado.porId.get(assentamentoId)?.nome || 'o assentamento';
+    mostrarStatus(total
+      ? `${formatarNumero(total)} parcelas SIGEF relacionadas a ${nome}`
+      : `Nenhuma parcela SIGEF candidata cruza ${nome}`);
   }
 }
 
@@ -492,6 +536,38 @@ function renderizarDetalhes(item) {
     <section class="detail-section"><span class="detail-label">Registro oficial</span><h3>Dados do território</h3><div class="official-row"><span>Geometria</span><strong>${item.geometria_disponivel ? 'Disponível' : 'Pendente'}</strong></div><div class="official-row"><span>Tipo</span><strong>${escapar(item.tipo || 'Projeto de Assentamento')}</strong></div><div class="official-row"><span>Fonte</span><strong>INCRA / IBAMA</strong></div><p class="data-note">O polígono representa o projeto oficial e pode atravessar limites municipais.</p></section>`;
 }
 
+function propriedadeSigef(feature, nome, padrao = 'Não informado') {
+  const valor = feature.getProperty(nome);
+  return valor === null || valor === undefined || valor === '' ? padrao : String(valor);
+}
+
+function renderizarDetalhesParcelaSigef(feature, tipo) {
+  const codigo = propriedadeSigef(feature, 'id_sigef', 'Indisponível');
+  const codigoImovel = propriedadeSigef(feature, 'codigo_imovel');
+  const situacaoBruta = feature.getProperty('situacao');
+  const situacao = situacoesSigef[situacaoBruta] || situacaoBruta || 'Não informada';
+  const fonte = propriedadeSigef(feature, 'fonte', `SIGEF ${tipo}`);
+  const ids = idsAssentamentosDaParcela(feature);
+  const assentamentos = ids
+    .map((id) => estado.porId.get(id)?.nome)
+    .filter(Boolean)
+    .join(', ') || 'Sem relação espacial identificada';
+  const nomePropriedade = propriedadeSigef(feature, 'nome_propriedade');
+  const area = feature.getProperty('area_oficial_ha');
+  const matricula = propriedadeSigef(feature, 'numero_matricula');
+  const atividade = propriedadeSigef(feature, 'atividade_principal');
+  const observacoes = propriedadeSigef(feature, 'observacoes_publicas', 'Não informadas');
+  const numeroLote = propriedadeSigef(feature, 'numero_lote_oficial', 'Não disponível na base SIGEF');
+  const areaFormatada = area === null || area === undefined || area === ''
+    ? 'Não informada'
+    : `${formatarNumero(area, 2)} ha`;
+
+  elementos.conteudo.innerHTML = `<div class="detail-hero"><span class="detail-kicker">Parcela rural candidata</span><h2>Parcela SIGEF</h2><p class="detail-municipality">Código SIGEF: ${escapar(codigo)}</p></div>
+    <div class="metric-grid"><div class="metric"><span>Situação</span><strong>${escapar(situacao)}</strong></div><div class="metric"><span>Camada</span><strong>${escapar(tipo)}</strong><small>SIGEF</small></div><div class="metric"><span>Assentamento relacionado</span><strong>${escapar(assentamentos)}</strong><small>por interseção espacial</small></div><div class="metric"><span>Código do imóvel</span><strong>${escapar(codigoImovel)}</strong></div></div>
+    <section class="detail-section"><span class="detail-label">Ficha da propriedade</span><h3>Informações disponíveis</h3><div class="official-row"><span>Nome da propriedade</span><strong>${escapar(nomePropriedade)}</strong></div><div class="official-row"><span>Área oficial</span><strong>${escapar(areaFormatada)}</strong></div><div class="official-row"><span>Matrícula</span><strong>${escapar(matricula)}</strong></div><div class="official-row"><span>Atividade principal</span><strong>${escapar(atividade)}</strong></div><div class="official-row"><span>Número oficial do lote</span><strong>${escapar(numeroLote)}</strong></div><div class="official-row"><span>Observações públicas</span><strong>${escapar(observacoes)}</strong></div><p class="data-note">Os campos já estão preparados para receber dados oficiais futuros. Ausências são exibidas como “não informado”; nenhum número de lote foi criado pelo atlas.</p></section>
+    <section class="detail-section"><span class="detail-label">Origem cartográfica</span><h3>Rastreabilidade</h3><div class="official-row"><span>Base</span><strong>${escapar(fonte)}</strong></div><div class="official-row"><span>Relação com assentamento</span><strong>Interseção espacial</strong></div><p class="data-note">Parcela SIGEF candidata. A geometria não confirma, por si só, que se trata de lote interno oficial do assentamento.</p></section>`;
+}
+
 function renderizarMunicipio() {
   const municipio = estado.metadados?.municipio || {};
   elementos.conteudo.innerHTML = `<div class="detail-hero"><span class="detail-kicker">Território municipal</span><h2>Abelardo Luz</h2><p class="detail-municipality">Santa Catarina · código IBGE 4200101</p></div>
@@ -564,12 +640,17 @@ function selecionar(id, ajustarMapa = false) {
   const feature = estado.featuresPorId.get(id);
   if (!item || !feature) return;
   estado.selecionado = id;
+  estado.parcelaSelecionadaSigef = null;
   assentamentosLayer.setStyle(estiloAssentamento);
   renderizarDetalhes(item);
   abrirPainel();
   renderizarLista(elementos.busca.value);
   if (ajustarMapa) {
     const mobile = window.matchMedia('(max-width: 900px)').matches;
+    google.maps.event.addListenerOnce(mapa, 'idle', () => {
+      if ((mapa.getZoom() || 0) < 13) mapa.setZoom(13);
+      sincronizarParcelasSigef();
+    });
     mapa.fitBounds(boundsDaFeature(feature), mobile
       ? { top: 90, right: 28, bottom: 260, left: 28 }
       : {
@@ -579,25 +660,41 @@ function selecionar(id, ajustarMapa = false) {
           left: document.body.classList.contains('explorer-collapsed') ? 72 : 360,
         });
   }
+  sincronizarParcelasSigef();
 }
 
 function selecionarMunicipio() {
   estado.selecionado = 'municipio';
+  estado.parcelaSelecionadaSigef = null;
   assentamentosLayer?.setStyle(estiloAssentamento);
   renderizarMunicipio();
   abrirPainel();
   renderizarLista(elementos.busca.value);
   recenterMunicipio();
+  sincronizarParcelasSigef();
 }
 
 function limparSelecao(voltar = false) {
   estado.selecionado = null;
+  estado.parcelaSelecionadaSigef = null;
   assentamentosLayer?.setStyle(estiloAssentamento);
+  atualizarEstilosParcelasSigef();
   elementos.painel.classList.remove('is-open');
   elementos.painel.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('has-selection');
   renderizarLista(elementos.busca.value);
   if (voltar) recenterMunicipio();
+  sincronizarParcelasSigef();
+}
+
+function fecharDetalhes() {
+  if (estado.parcelaSelecionadaSigef && assentamentoSelecionadoId()) {
+    estado.parcelaSelecionadaSigef = null;
+    atualizarEstilosParcelasSigef();
+    renderizarDetalhes(estado.porId.get(estado.selecionado));
+    return;
+  }
+  limparSelecao(false);
 }
 
 function alternarBase() {
@@ -739,7 +836,6 @@ async function carregar() {
     mostrarStatus('Carregando a base do Google Maps…');
     monitorarMapaBase();
     infoWindow = new google.maps.InfoWindow({ disableAutoPan: true, headerDisabled: true });
-    parcelasSigefInfoWindow = new google.maps.InfoWindow({ disableAutoPan: false, headerDisabled: true });
     mapa.addListener('zoom_changed', sincronizarParcelasSigef);
     const bounds = new google.maps.LatLngBounds();
     expandirBounds(bounds, limite.features[0]?.geometry?.coordinates);
@@ -759,7 +855,7 @@ async function carregar() {
 }
 
 elementos.busca.addEventListener('input', () => renderizarLista(elementos.busca.value));
-$('#fechar-detalhes').addEventListener('click', () => limparSelecao(false));
+$('#fechar-detalhes').addEventListener('click', fecharDetalhes);
 $('#visao-geral').addEventListener('click', () => limparSelecao(true));
 $('#zoom-in').addEventListener('click', () => mapa?.setZoom((mapa.getZoom() || 10) + 1));
 $('#zoom-out').addEventListener('click', () => mapa?.setZoom((mapa.getZoom() || 10) - 1));
@@ -772,7 +868,7 @@ document.querySelectorAll('[data-layer]').forEach((botao) => {
   botao.addEventListener('click', () => mapa && alternarCamada(botao));
 });
 window.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && estado.selecionado) limparSelecao(false);
+  if (event.key === 'Escape' && (estado.selecionado || estado.parcelaSelecionadaSigef)) fecharDetalhes();
 });
 
 let telaPequenaAnterior = emTelaPequena();

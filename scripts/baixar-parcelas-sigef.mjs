@@ -10,6 +10,7 @@ import { join, resolve } from 'node:path';
 const raiz = resolve(import.meta.dirname, '..');
 const saida = join(raiz, 'web', 'geojson');
 const limitePath = join(saida, 'abelardo-luz.geojson');
+const assentamentosPath = join(saida, 'assentamentos.geojson');
 
 const SERVICOS = {
   publico: 'https://pamgia.ibama.gov.br/server/rest/services/BasesSincronizadas/lim_sigef_publico_incra_p/FeatureServer/0/query',
@@ -129,7 +130,7 @@ function geometriasIntersectam(a, b) {
   return poligonos(a).some((pa) => poligonos(b).some((pb) => poligonosIntersectam(pa, pb)));
 }
 
-async function baixar(tipo, url, geometriasMunicipio) {
+async function baixar(tipo, url, geometriasMunicipio, assentamentos) {
   console.log(`\nConsultando ${tipo}...`);
   const indices = await consultar(url, {
     where: '1=1',
@@ -161,6 +162,11 @@ async function baixar(tipo, url, geometriasMunicipio) {
     .filter((feature) => feature.geometry && geometriasMunicipio.some((geom) => geometriasIntersectam(feature.geometry, geom)))
     .map((feature) => {
       const p = feature.properties || {};
+      const bboxParcela = bboxGeometria(feature.geometry);
+      const assentamentoIds = assentamentos
+        .filter((assentamento) => bboxesIntersectam(bboxParcela, assentamento.bbox))
+        .filter((assentamento) => geometriasIntersectam(feature.geometry, assentamento.geometry))
+        .map((assentamento) => assentamento.id);
       return {
         type: 'Feature',
         geometry: feature.geometry,
@@ -173,7 +179,13 @@ async function baixar(tipo, url, geometriasMunicipio) {
           tipo_camada: 'parcela_rural_sigef',
           status_validacao_lote: 'NAO_VERIFICADO_COMO_LOTE_DE_ASSENTAMENTO',
           numero_lote_oficial: null,
-          assentamento_id: null,
+          assentamento_id: assentamentoIds[0] || null,
+          assentamento_ids: assentamentoIds,
+          nome_propriedade: null,
+          area_oficial_ha: null,
+          numero_matricula: null,
+          atividade_principal: null,
+          observacoes_publicas: null,
           criterio_selecao: 'intersecao_com_limite_municipal_IBGE',
           possui_dados_de_proprietario: false,
         },
@@ -182,11 +194,14 @@ async function baixar(tipo, url, geometriasMunicipio) {
 
   const arquivo = join(saida, `parcelas_sigef_${tipo}_candidatas.geojson`);
   await writeFile(arquivo, JSON.stringify({ type: 'FeatureCollection', features: resultado }), 'utf8');
+  const relacionadas = resultado.filter((feature) => feature.properties.assentamento_ids.length > 0).length;
   console.log(`Salvas ${resultado.length} parcelas candidatas em ${arquivo}`);
+  console.log(`  ${relacionadas} parcelas cruzam ao menos um assentamento do atlas`);
   return {
     tipo,
     consultadas_bbox: ids.length,
     retidas: resultado.length,
+    relacionadas_a_assentamentos: relacionadas,
     arquivo,
     criterio: resultado.length ? 'intersecao_com_limite_municipal_IBGE' : 'nenhum',
   };
@@ -194,15 +209,25 @@ async function baixar(tipo, url, geometriasMunicipio) {
 
 await mkdir(saida, { recursive: true });
 const limite = JSON.parse(await readFile(limitePath, 'utf8'));
+const assentamentosGeojson = JSON.parse(await readFile(assentamentosPath, 'utf8'));
 const geometriasMunicipio = (limite.features || []).map((feature) => feature.geometry).filter(Boolean);
 if (!geometriasMunicipio.length) throw new Error('Limite municipal IBGE ausente ou inválido.');
+const assentamentos = (assentamentosGeojson.features || [])
+  .filter((feature) => feature.geometry && feature.properties?.identificador_atlas)
+  .map((feature) => ({
+    id: feature.properties.identificador_atlas,
+    geometry: feature.geometry,
+    bbox: bboxGeometria(feature.geometry),
+  }));
+if (!assentamentos.length) throw new Error('Geometrias dos assentamentos ausentes ou inválidas.');
 console.log('Limite municipal real para filtragem: SIM');
+console.log(`Assentamentos preparados para cruzamento espacial: ${assentamentos.length}`);
 
 const resumo = [];
 const erros = [];
 for (const [tipo, url] of Object.entries(SERVICOS)) {
   try {
-    resumo.push(await baixar(tipo, url, geometriasMunicipio));
+    resumo.push(await baixar(tipo, url, geometriasMunicipio, assentamentos));
   } catch (erro) {
     erros.push({ tipo, erro: erro.message });
     console.error(`ERRO ${tipo}:`, erro.message);

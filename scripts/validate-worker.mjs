@@ -81,7 +81,9 @@ for (const [path, quantidadeEsperada] of [
   const chavesPermitidas = new Set([
     'id_sigef', 'codigo_imovel', 'situacao', 'municipio_codigo_origem', 'fonte',
     'tipo_camada', 'status_validacao_lote', 'numero_lote_oficial', 'assentamento_id',
-    'criterio_selecao', 'possui_dados_de_proprietario',
+    'assentamento_ids', 'nome_propriedade', 'area_oficial_ha', 'numero_matricula',
+    'atividade_principal', 'observacoes_publicas', 'criterio_selecao',
+    'possui_dados_de_proprietario',
   ]);
   for (const feature of geojson.features) {
     if (Object.keys(feature.properties || {}).some((chave) => !chavesPermitidas.has(chave))) {
@@ -89,6 +91,9 @@ for (const [path, quantidadeEsperada] of [
     }
     if (feature.properties?.numero_lote_oficial !== null || feature.properties?.possui_dados_de_proprietario !== false) {
       throw new Error(`A camada SIGEF contém dado incompatível com a publicação em ${path}.`);
+    }
+    if (!Array.isArray(feature.properties?.assentamento_ids)) {
+      throw new Error(`A parcela não possui a lista de assentamentos relacionados em ${path}.`);
     }
   }
 }

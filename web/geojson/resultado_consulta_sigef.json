@@ -1,5 +1,5 @@
 {
-  "data_utc": "2026-11-11T23:58:13.977Z",
+  "data_utc": "2026-11-12T00:55:03.717Z",
   "municipio": "Abelardo Luz/SC",
   "codigo_ibge": 4200101,
   "bbox_de_busca_nao_oficial": [
@@ -14,6 +14,7 @@
       "tipo": "publico",
       "consultadas_bbox": 3045,
       "retidas": 2555,
+      "relacionadas_a_assentamentos": 2553,
       "arquivo": "C:\\PROJETOS\\ATLAS\\atlas-interativo-abelardo-luz\\web\\geojson\\parcelas_sigef_publico_candidatas.geojson",
       "criterio": "intersecao_com_limite_municipal_IBGE"
     },
@@ -21,6 +22,7 @@
       "tipo": "privado",
       "consultadas_bbox": 2061,
       "retidas": 534,
+      "relacionadas_a_assentamentos": 18,
       "arquivo": "C:\\PROJETOS\\ATLAS\\atlas-interativo-abelardo-luz\\web\\geojson\\parcelas_sigef_privado_candidatas.geojson",
       "criterio": "intersecao_com_limite_municipal_IBGE"
     }
